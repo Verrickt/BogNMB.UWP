@@ -1,0 +1,33 @@
+﻿<Page
+    x:Class="BogNMB.UWP.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:BogNMB.UWP"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:view="using:BogNMB.UWP.View"
+    xmlns:viewmodel="using:BogNMB.UWP.ViewModel"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Page.DataContext>
+        <viewmodel:MainViewModel></viewmodel:MainViewModel>
+    </Page.DataContext>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition MinWidth="48" MaxWidth="200"></ColumnDefinition>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+            <ColumnDefinition MinWidth="300" MaxWidth="500"></ColumnDefinition>
+            <ColumnDefinition Width="Auto" ></ColumnDefinition>
+            <ColumnDefinition MinWidth="300"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <view:ForumUserControl ></view:ForumUserControl>
+        <Border Grid.Column="1" Width="0" Background="Gray"></Border>
+        <Frame Grid.Column="2">
+            <view:PostUserControl DataContext="{Binding SelectedForum}" Grid.Column="1"></view:PostUserControl>
+        </Frame>
+        <controls:GridSplitter  Grid.Column="3"></controls:GridSplitter>
+        <view:ThreadUserControl Grid.Column="4" DataContext="{Binding SelectedForum.SelectedPost}"></view:ThreadUserControl>
+    </Grid>
+</Page>

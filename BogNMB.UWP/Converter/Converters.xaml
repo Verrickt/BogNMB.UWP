@@ -1,0 +1,14 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:BogNMB.UWP.Converter"
+    xmlns:converters="using:Microsoft.Toolkit.Uwp.UI.Converters">
+    
+    <local:CookieToColorConverter
+        x:Key="CookieColorConverter"
+        ></local:CookieToColorConverter>
+    <local:CookieToFontWeightConverter
+        x:Key="CookieToFontWeightConverter"
+        ></local:CookieToFontWeightConverter>
+    <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"></converters:BoolToVisibilityConverter>
+</ResourceDictionary>

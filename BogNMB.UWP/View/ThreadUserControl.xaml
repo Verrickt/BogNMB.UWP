@@ -1,0 +1,158 @@
+﻿<UserControl
+    x:Class="BogNMB.UWP.View.ThreadUserControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:BogNMB.UWP.View"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:common="using:html2xaml"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="400">
+
+    <Grid >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="48"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <TextBlock VerticalAlignment="Center" Margin="12" Grid.Column="0" >
+                <Run Text="No."></Run><Run Text="{Binding No}"></Run>
+            </TextBlock>
+        </Grid>
+        <ListView 
+            Grid.Row="1"
+            SelectionMode="None"
+            VerticalAlignment="Top"
+            ItemsSource="{Binding Threads}"
+            >
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
+                    <Setter Property="Background" Value="White"></Setter>
+                    <Setter Property="Margin" Value="5"></Setter>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ListViewItem">
+                                <Grid
+                                    Background="{TemplateBinding Background}"
+                                    >
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition></RowDefinition>
+                                        <RowDefinition></RowDefinition>
+                                    </Grid.RowDefinitions>
+                                    <ContentPresenter 
+                                        Margin="{TemplateBinding Padding}"
+                                        ContentTemplate="{TemplateBinding ContentTemplate}"
+                                        ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+                                        Content="{TemplateBinding DataContext}"></ContentPresenter>
+                                    <Border Grid.Row="1"
+                                            Opacity=".5"
+                                            Background="Gray"
+                                            Height="1"
+                                            ></Border>
+                                </Grid>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ListView.ItemContainerStyle>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid >
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="24"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid>
+                            <Grid.Resources>
+                                <Style TargetType="TextBlock" >
+                                    <Setter Property="Foreground" Value="Gray"></Setter>
+                                </Style>
+                            </Grid.Resources>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{Binding Cookie}"
+                                       FontWeight="{Binding IsPo,Converter={StaticResource CookieToFontWeightConverter}}"
+                                       >
+                                <TextBlock.Foreground>
+                                    <SolidColorBrush
+                                        Color="{Binding Converter={StaticResource CookieColorConverter},ConverterParameter={Binding}}"
+                                        ></SolidColorBrush>
+                                </TextBlock.Foreground>
+                                
+                            </TextBlock>
+                            <TextBlock Grid.Column="1"
+                                       HorizontalAlignment="Center"
+                                       Text="{Binding Time}"
+                                       ></TextBlock>
+                            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Grid.Column="2">
+                                <TextBlock>No.</TextBlock>
+                                <TextBlock 
+                                       Text="{Binding No}"
+                                       ></TextBlock>
+                            </StackPanel>
+                        </Grid>
+                        <Grid Grid.Row="1"
+                              Visibility="{Binding Saged,Converter={StaticResource BoolToVisibilityConverter}}"
+                              >
+                            <TextBlock Margin="0,-5,0,0"
+                                       Foreground="Red"
+                                       >
+                                <Run FontSize="14" FontFamily="Segoe MDL2 Assets" Text="&#xE8E0;"></Run>
+                                <Run FontSize="18" >SAGE</Run>
+                            </TextBlock>
+                        </Grid>
+                        <RelativePanel Grid.Row="2" Margin="5,4">
+                            <controls:ImageEx
+                                IsCacheEnabled="True"
+                                EnableLazyLoading="True"
+                                PlaceholderStretch="Uniform"
+                                HorizontalAlignment="Stretch"
+                                Stretch="Uniform"
+                                MaxWidth="150"
+                                VerticalAlignment="Top"
+                                Visibility="{Binding ShowImage,Converter={StaticResource BoolToVisibilityConverter}}"
+                                Source="{Binding ImageSource}"
+                                Margin="0,0,0,0"
+                                x:Name="img"
+                                PlaceholderSource="/Assets/place_holder.png"
+                                ></controls:ImageEx>
+                            <TextBlock Grid.Row="2"
+                                       RelativePanel.RightOf="img"
+                                       HorizontalAlignment="Left"
+                                       Margin="5,0,0,0"
+                                       Grid.Column="1" TextWrapping="Wrap" Text="{Binding Content}"></TextBlock>
+                        </RelativePanel>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+            <ListView.Footer>
+                <StackPanel Height="40"  Margin="5,0" HorizontalAlignment="Center" Orientation="Horizontal">
+                    <ProgressRing Margin="5,0" 
+                                  DataContext="{Binding Threads}"
+                                  IsActive="{Binding IsLoading}"></ProgressRing>
+                    <TextBlock VerticalAlignment="Center"
+                               Text="{Binding FooterText}"
+                               ></TextBlock>
+                    <TextBlock DataContext="{Binding Threads}"  VerticalAlignment="Center">
+                        <Run>IsLoading</Run>
+                        <Run Text="{Binding IsLoading}"></Run>
+                        <Run>hasMore</Run>
+                        <Run Text="{Binding HasMoreItems}"></Run>
+                    </TextBlock>
+                    </StackPanel>
+            </ListView.Footer>
+        </ListView>
+    </Grid>
+</UserControl>
