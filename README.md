@@ -1,5 +1,5 @@
 # BogNMB.UWP
-B岛匿名版(http://bog.ac)的非官方UWP客户端。为了开发方便SDK版本为1903，日后可能变更
+[B岛匿名版](http://bog.ac)的非官方UWP客户端。为了开发方便SDK版本为1903，日后可能会修改
 
 ![Screenshot](./Promotions/Screenshot.jpg)
 
