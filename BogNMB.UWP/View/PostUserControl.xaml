@@ -66,7 +66,7 @@
                                 <Run FontSize="18" >本串已被红名推荐</Run>
                             </TextBlock>
                         </Grid>
-                        <RelativePanel Grid.Row="2" Margin="5,4">
+                        <RelativePanel Grid.Row="2" Margin="0,4">
                             <controls:ImageEx
                                 IsCacheEnabled="True"
                                 EnableLazyLoading="True"
@@ -77,14 +77,14 @@
                                 VerticalAlignment="Top"
                                 Visibility="{Binding ShowImage,Converter={StaticResource BoolToVisibilityConverter}}"
                                 Source="{Binding ImageSource}"
-                                Margin="0,0,0,0"
+                                Margin="0,0,12,0"
                                 x:Name="img"
                                 PlaceholderSource="/Assets/place_holder.png"
                                 ></controls:ImageEx>
                             <RichTextBlock Grid.Row="2"
                                        RelativePanel.RightOf="img"
                                        HorizontalAlignment="Left"
-                                       Margin="5,0,0,0"
+                                       Margin="0,0,0,0"
                                           IsTextSelectionEnabled="False"
                                        Grid.Column="1" TextWrapping="Wrap" 
                                        ext:RichTextBlockExtension.Html="{Binding Content}"
