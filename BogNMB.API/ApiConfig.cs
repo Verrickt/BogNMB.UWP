@@ -12,6 +12,6 @@ namespace BogNMB.API
 
 		}
 		public static ApiConfig Default => new ApiConfig() { BaseUrl = "http://bog.ac/api/" };
-		public static ApiConfig Test = new ApiConfig() { BaseUrl = "http://test.bog.ac/api/" };
+		public static ApiConfig Test => new ApiConfig() { BaseUrl = "http://test.bog.ac/api/" };
 	}
 }
