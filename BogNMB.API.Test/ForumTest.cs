@@ -8,7 +8,7 @@ namespace BogNMB.API.Test
 {
     class Config
     {
-        public static ApiConfig ApiConfig => ApiConfig.Default;
+        public static ApiConfig ApiConfig => ApiConfig.Test;
     }
     [TestClass]
     public class ForumTest

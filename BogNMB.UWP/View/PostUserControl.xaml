@@ -7,6 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:ext="using:BogNMB.UWP.CustomControl"
     d:DesignHeight="300"
     d:DesignWidth="400">
 
@@ -80,11 +81,14 @@
                                 x:Name="img"
                                 PlaceholderSource="/Assets/place_holder.png"
                                 ></controls:ImageEx>
-                            <TextBlock Grid.Row="2"
+                            <RichTextBlock Grid.Row="2"
                                        RelativePanel.RightOf="img"
                                        HorizontalAlignment="Left"
                                        Margin="5,0,0,0"
-                                       Grid.Column="1" TextWrapping="Wrap" Text="{Binding Content}"></TextBlock>
+                                          IsTextSelectionEnabled="False"
+                                       Grid.Column="1" TextWrapping="Wrap" 
+                                       ext:RichTextBlockExtension.Html="{Binding Content}"
+                                           ></RichTextBlock>
                         </RelativePanel>
                     </Grid>
                 </DataTemplate>

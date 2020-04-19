@@ -1,6 +1,10 @@
-﻿using BogNMB.API;
+﻿using AngleSharp;
+using AngleSharp.Dom;
+using AngleSharp.Html.Dom;
+using BogNMB.API;
 using BogNMB.API.Controllers;
 using BogNMB.API.POCOs;
+using ConsoleApp1.Visitor;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,8 +14,29 @@ namespace ConsoleApp1
 {
     class Program
     {
+        public static void Dfs(IElement element,int level)
+        {
+            for (int i = 0; i < level; i++) Console.Write(" ");
+            Console.WriteLine(element.GetType().Name);
+            foreach (var item in element.Children)
+            {
+                Dfs(item, level + 1);
+            }
+        }
+
         static async Task Main(string[] args)
         {
+            string str1 = "<font color=\\\"#00a1d6\\\">&gt;&gt;Po.6214</font><br />另外已知的是套壳客户端发不了图片，因为就是个套壳网页所以没办法唤醒相册[＾o＾]ﾉ";
+            var config = Configuration.Default;
+            var context = new BrowsingContext(config);
+            var document = await context.OpenAsync(req => req.Content(str1));
+            var visitor = new RichTextBlockVisitor();
+            Dfs(document.DocumentElement, 1);
+            var documentNode = new HTMLNode((IHtmlHtmlElement)document.DocumentElement);
+            var renderer = documentNode.Accept(visitor);
+            renderer.Print();
+            Console.Read();
+
             while (true)
             {
                 var str = Console.ReadLine();

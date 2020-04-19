@@ -18,7 +18,7 @@ namespace BogNMB.UWP.ViewModel
 {
     class Config
     {
-        public static ApiConfig ApiConfig => ApiConfig.Default;
+        public static ApiConfig ApiConfig => ApiConfig.Test;
     }
     public class PostViewModel : ViewModelBase
     {
@@ -118,7 +118,7 @@ namespace BogNMB.UWP.ViewModel
                 return Enumerable.Empty<ThreadViewModel>();
             }
             var pc = new ThreadController(Config.ApiConfig);
-            var threads = await pc.GetThreadsAsync(_post.No, pageIndex);
+            var threads = await pc.GetThreadsAsync(_post.No, pageIndex+1);
             if (pageIndex == 0)
             {
                 var SelfAsJson = (Thread)JsonConvert.DeserializeObject(JsonConvert.SerializeObject(_post), typeof(Thread));
