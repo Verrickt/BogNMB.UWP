@@ -67,4 +67,25 @@ namespace BogNMB.API.Test
             }
         }
     }
+
+    [TestClass]
+    public class ReplyTest
+    {
+        [DataTestMethod]
+        [DataSource]
+        public async Task RetriveReplyTest(ApiConfig config)
+        {
+            var pc = new PostController(config);
+            var fc = new ForumController(config);
+            var forums = await fc.GetForumsAsync();
+            var posts = await pc.GetPostAsync(forums.First().Id, 1);
+            var post = posts.FirstOrDefault(p => p.Hr + p.Replys.Count > 0);
+            if (post != null)
+            {
+                var rc = new ReplyController(config);
+                var reply = await rc.GetReplyAsync(post.No);
+                Assert.IsInstanceOfType(reply, typeof(Reply));
+            }
+        }
+    }
 }
