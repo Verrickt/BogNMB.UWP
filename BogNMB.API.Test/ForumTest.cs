@@ -1,22 +1,39 @@
 using BogNMB.API.Controllers;
 using BogNMB.API.POCOs;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace BogNMB.API.Test
 {
-    class Config
+    public class DataSourceAttribute : Attribute, ITestDataSource
     {
-        public static ApiConfig ApiConfig => ApiConfig.Test;
+        public IEnumerable<object[]> GetData(MethodInfo methodInfo)
+        {
+            yield return new[] { ApiConfig.Default };
+            yield return new[] { ApiConfig.Test };
+        }
+
+        public string GetDisplayName(MethodInfo methodInfo, object[] data)
+        {
+            if(data[0] is ApiConfig ap)
+            {
+                if (ap.BaseUrl == ApiConfig.Default.BaseUrl) return "Default";
+                else return "Test";
+            }
+            return "Unknown";
+        }
     }
     [TestClass]
     public class ForumTest
     {
-        [TestMethod]
-        public async Task ForumRetriveTest()
+        [DataTestMethod]
+        [DataSource]
+        public async Task ForumRetriveTest(ApiConfig config)
         {
-            var config = Config.ApiConfig;
             var controller = new ForumController(config);
             var forums = await controller.GetForumsAsync();
             foreach (var item in forums)
@@ -29,10 +46,10 @@ namespace BogNMB.API.Test
     [TestClass]
     public class PostTest
     {
-        [TestMethod]
-        public async Task TestRetrivePost()
+        [DataTestMethod]
+        [DataSource]
+        public async Task TestRetrivePost(ApiConfig config)
         {
-            var config = Config.ApiConfig;
             var pc = new PostController(config);
             var fc = new ForumController(config);
             var forums = await fc.GetForumsAsync();
@@ -47,10 +64,10 @@ namespace BogNMB.API.Test
     [TestClass]
     public class ThreadTest
     {
-        [TestMethod]
-        public async Task ThreadRetriveTest()
+        [DataTestMethod]
+        [DataSource]
+        public async Task ThreadRetriveTest(ApiConfig config)
         {
-            var config = Config.ApiConfig;
             var pc = new PostController(config);
             var fc = new ForumController(config);
             var forums = await fc.GetForumsAsync();
