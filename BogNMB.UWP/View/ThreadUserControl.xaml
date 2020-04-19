@@ -131,8 +131,8 @@
                             <RichTextBlock Grid.Row="2"
                                        RelativePanel.RightOf="img"
                                        HorizontalAlignment="Left"
-                                       IsTextSelectionEnabled="False"
-                                       Margin="5,0,0,0"
+                                       IsTextSelectionEnabled="True"
+                                       Margin="0,0,0,0"
                                        Grid.Column="1" TextWrapping="Wrap" ext:RichTextBlockExtension.Html="{Binding Content}"></RichTextBlock>
                         </RelativePanel>
                     </Grid>
