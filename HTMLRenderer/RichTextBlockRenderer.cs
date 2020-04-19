@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Windows.UI;
 using Windows.UI.Xaml;
@@ -84,7 +85,12 @@ namespace HTMLRenderer
         void IAstVisitor.Visit(HrefNode node)
         {
             Hyperlink h = new Hyperlink();
-            h.Inlines.Add(new Run() { Text = "Hello world" });
+            
+            h.Inlines.Add(new Run() { Text = node.Content.Text });
+            var link = node.Content.GetAttribute("href");
+            link = Regex.Unescape(link);
+            link = link.Substring(1, link.Length - 2);
+            h.NavigateUri = new Uri(link,UriKind.Absolute);
             _workingStack.Peek().Inlines.Add(h);
         }
 
