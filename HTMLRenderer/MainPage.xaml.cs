@@ -1,6 +1,9 @@
 ﻿using AngleSharp;
+using AngleSharp.Dom;
+using HTMLParser;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -25,24 +28,24 @@ namespace HTMLRenderer
     public sealed partial class MainPage : Page
     {
         private readonly BrowsingContext context;
-        string str = "< a href=\\\"https://music.163.com/#/song?id=498286570\\\" title=\\\"https://music.163.com/#/song?id=498286570\\\" target=\\\"_blank\\\" rel=\\\"nofollow noreferrer\\\"><i class=\\\"iconfont icon-015\\\"></i>网页链接</a><br />あよ的声音真好听[〃∀〃]";
+        string str = "<a href=\\\"https://music.163.com/#/song?id=498286570\\\" title=\\\"https://music.163.com/#/song?id=498286570\\\" target=\\\"_blank\\\" rel=\\\"nofollow noreferrer\\\"><i class=\\\"iconfont icon-015\\\"></i>网页链接</a><br />あよ的声音真好听[〃∀〃]";
         public MainPage()
         {
             this.InitializeComponent();
             Html.Text = str;
-            var config = Configuration.Default;
-            context = new BrowsingContext(config);
-
         }
-
+       
         public async Task Parse()
         {
-            var document = await context.OpenAsync(req => req.Content(Html.Text));
+            rch.Blocks.Clear();
+            var node = await AstHelper.FromHtml(Html.Text);
+            var v = new RichTextBlockRenderer();
+            node.Accept(v);
         }
 
         private void btn_Click(object sender, RoutedEventArgs e)
         {
-            Parse();
+           // Parse();
         }
     }
 }

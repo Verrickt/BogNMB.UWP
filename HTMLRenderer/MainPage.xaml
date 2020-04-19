@@ -6,18 +6,24 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    xmlns:common="using:html2xaml"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <StackPanel >
+    <Grid  >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="400"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
         <TextBox TextWrapping="Wrap"
-                 Width="400"
                  AcceptsReturn="True"
                  x:Name="Html"></TextBox>
-        <Button x:Name="btn" Click="btn_Click" HorizontalAlignment="Center">Parse</Button>
-        <RichTextBlock
-            Height="400"
-            common:Properties.Html="{x:Bind Html.Text,Mode=OneWay}"
+        <Grid Grid.Row="1"
+            >
+            <RichTextBlock
+            local:RichTextBlockExtension.Html="{x:Bind Html.Text,Mode=OneWay}"
+            x:Name="rch"
+            VerticalAlignment="Stretch"
             ></RichTextBlock>
-    </StackPanel>
+        </Grid>
+
+    </Grid>
 </Page>
