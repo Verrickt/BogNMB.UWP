@@ -123,6 +123,7 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RichTextBlockRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -158,9 +159,9 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\BogNMB\RichTextBlock.Html2Xaml\RichTextBlock.Html2Xaml.csproj">
-      <Project>{d3408113-4ef7-4056-9ec9-d383306514b8}</Project>
-      <Name>RichTextBlock.Html2Xaml</Name>
+    <ProjectReference Include="..\HTMLParser\HTMLParser.csproj">
+      <Project>{9b102bbb-e36a-49bf-9bb0-029b75acd09a}</Project>
+      <Name>HTMLParser</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
