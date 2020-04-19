@@ -85,6 +85,8 @@
                                        RelativePanel.RightOf="img"
                                        HorizontalAlignment="Left"
                                        Margin="0,0,0,0"
+                                           MaxHeight="300"
+                                           TextTrimming="WordEllipsis"
                                           IsTextSelectionEnabled="False"
                                        Grid.Column="1" TextWrapping="Wrap" 
                                        ext:RichTextBlockExtension.Html="{Binding Content}"
