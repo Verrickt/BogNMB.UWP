@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HTMLParser;
+using System;
 using System.Linq;
 using System.Text;
 using Windows.UI.Xaml;
@@ -8,6 +9,35 @@ namespace BogNMB.UWP.CustomControl
 {
     public class RichTextBlockExtension:DependencyObject
     {
+
+
+
+
+
+        public static IAstNode GetRootNode(DependencyObject obj)
+        {
+            return (IAstNode)obj.GetValue(RootNodeProperty);
+        }
+
+        public static void SetRootNode(DependencyObject obj, IAstNode value)
+        {
+            obj.SetValue(RootNodeProperty, value);
+        }
+
+        // Using a DependencyProperty as the backing store for RootNode.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty RootNodeProperty =
+            DependencyProperty.RegisterAttached("RootNode", typeof(IAstNode), typeof(RichTextBlockExtension), new PropertyMetadata("",new PropertyChangedCallback(OnNodeChanged)));
+
+        private static void OnNodeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is RichTextBlock rtb && e.NewValue is IAstNode root)
+            {
+                var renderer = new RichTextBlockRenderer();
+                var res = renderer.Render(root);
+                rtb.Blocks.Clear();
+                foreach (var item in res) rtb.Blocks.Add(item);
+            }
+        }
 
         public static string GetHtml(DependencyObject obj)
         {

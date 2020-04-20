@@ -4,6 +4,7 @@ using HTMLParser;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Windows.UI;
@@ -47,7 +48,8 @@ namespace BogNMB.UWP.CustomControl
         {
             var context = new ParsingContext(1);
             node.Accept(this, context);
-            return context.Blocks.Trim().ToArray();
+            context.Blocks.Trim();
+            return context.Blocks;
         }
         public async Task<IReadOnlyList<Block>> RenderAsync(string html)
         {
@@ -150,39 +152,43 @@ namespace BogNMB.UWP.CustomControl
 
         void IAstVisitor<ParsingContext>.Visit(TextNode node, ParsingContext context)
         {
-            var txt = node.Text.Text;
-            if(Regex.IsMatch(txt, "^>>Po\\.\\d+$"))//^>>Po\.\d+$
+            if (node.Refer!=null)
             {
-                string id = txt.Substring(txt.LastIndexOf('.')+1);
-                if(int.TryParse(id,out var _))
+                var hyper = new Hyperlink();
+                hyper.Inlines.Add(new Run() { Text = node.Text.Text });
+                context.Stack.Peek().Inlines.Add(hyper);
+                //if (context.Level > 1) return;
+                var root = node.Refer;
+                var newContext = new ParsingContext(context.Level + 1);
+                root.Accept(this, newContext);
+                newContext.Blocks.Trim();
+                var rtb = new RichTextBlock();
+
+
+               // var bb = new Paragraph();
+               // bb.Inlines.Add(new Run() { Text = $"Level {newContext.Level}" });
+               // rtb.Blocks.Add(bb);
+                foreach (var item in newContext.Blocks) rtb.Blocks.Add(item);
+                
+                var panel = new InlineUIContainer();
+                var grid = new Grid()
                 {
-                    var rc = new ReplyController(ApiConfig.Test);
-                    var task = rc.GetReplyAsync(id).ConfigureAwait(false);
-                    var reply = task.GetAwaiter().GetResult();
-                    //var reply = task.Result;
-                    {
-                        var inner = reply.Com;
-                        var root = AstHelper.LoadHtmlAsync(inner).Result;
-                        var newContext = new ParsingContext(context.Level + 1);
-                        root.Accept(this, newContext);
-                        var panel = new InlineUIContainer();
-                        var rtb = new RichTextBlock();
-                        var bb = new Paragraph();
-                        bb.Inlines.Add(new Run() { Text = $"Level {newContext.Level}" });
-                        rtb.Blocks.Add(bb);
-                        foreach (var item in newContext.Blocks) rtb.Blocks.Add(item);
-                        var grid = new Grid()
-                        {
-                            Background = new SolidColorBrush(Colors.Red),
-                            Margin = new Thickness(12, 0, 0, 0)
-                        };
-                        grid.Children.Add(rtb);
-                        panel.Child = grid;
-                        var block = new Paragraph();
-                        block.Inlines.Add(panel);
-                        context.Blocks.Add(block);
-                    }
-                }
+                    Margin = new Thickness(0, 0, 0, 0)
+                };
+                var rect = new Rectangle();
+                grid.Children.Add(rect);
+                grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
+                grid.ColumnDefinitions.Add(new ColumnDefinition());
+                rect.Width = 8;
+                rect.VerticalAlignment = VerticalAlignment.Stretch;
+                rect.Fill = new SolidColorBrush(Colors.Red);
+                grid.Children.Add(rtb);
+                Grid.SetColumn(rect, 0);
+                Grid.SetColumn(rtb, 1);
+                panel.Child = grid;
+
+                context.Stack.Peek().Inlines.Add(new LineBreak());
+                context.Stack.Peek().Inlines.Add(panel);
             }
             else
             {
