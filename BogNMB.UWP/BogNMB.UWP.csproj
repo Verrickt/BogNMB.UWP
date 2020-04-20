@@ -126,6 +126,7 @@
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Model\ReferenceResolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModel\ForumViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
