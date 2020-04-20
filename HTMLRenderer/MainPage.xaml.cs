@@ -37,10 +37,7 @@ namespace HTMLRenderer
        
         public async Task Parse()
         {
-            rch.Blocks.Clear();
-            var node = await AstHelper.FromHtml(Html.Text);
-            var v = new RichTextBlockRenderer();
-            node.Accept(v);
+            
         }
 
         private void btn_Click(object sender, RoutedEventArgs e)
