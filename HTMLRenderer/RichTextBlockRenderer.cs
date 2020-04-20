@@ -15,55 +15,60 @@ using Windows.UI.Xaml.Media;
 
 namespace HTMLRenderer
 {
-    public class RichTextBlockRenderer : IAstVisitor
+    class ParsingContext
     {
-        private readonly Stack<Paragraph> _workingStack = new Stack<Paragraph>();
-        private List<Block> _blocks = new List<Block>();
-
-
+        public Stack<Paragraph> Stack { get; private set; }
+        public List<Block> Blocks { get; private set; }
+        public int Level { get; private set; }
+        public ParsingContext(int level)
+        {
+            Level = level;
+        }
+    }
+    
+    public class RichTextBlockRenderer : IAstVisitor<ParsingContext>
+    {
         public async Task<IReadOnlyList<Block>> RenderAsync(string html)
         {
-            Debug.Assert(_workingStack.Count == 0);
             var root = await AstHelper.FromHtml(html);
-            root.Accept(this);
-            Debug.Assert(_workingStack.Count == 0);
-            var res = _blocks.ToArray();
-            _blocks.Clear();
+            var context = new ParsingContext(1);
+            root.Accept(this,context);
+            var res = context.Blocks.ToArray();
             return res;
         }
 
-        void IAstVisitor.Visit(HTMLNode node)
+        void IAstVisitor<ParsingContext>.Visit(HTMLNode node,ParsingContext context)
         {
-            _workingStack.Push(new Paragraph());
-            node.Body.Accept(this);
-            var c = _workingStack.Pop();
-            _blocks.Add(c);
+            context.Stack.Push(new Paragraph());
+            node.Body.Accept(this,context);
+            var c = context.Stack.Pop();
+            context.Blocks.Add(c);
         }
 
-        void IAstVisitor.Visit(BodyNode body)
+        void IAstVisitor<ParsingContext>.Visit(BodyNode body, ParsingContext context)
         {
             foreach (var item in body.Children)
             {
-                item.Accept(this);
+                item.Accept(this,context);
             }
         }
 
-        void IAstVisitor.Visit(OtherNode other)
+        void IAstVisitor<ParsingContext>.Visit(OtherNode other, ParsingContext context)
         {
             foreach (var item in other.Children)
             {
-                item.Accept(this);
+                item.Accept(this,context);
             }
         }
 
-        void IAstVisitor.Visit(BrNode br)
+        void IAstVisitor<ParsingContext>.Visit(BrNode br, ParsingContext context)
         {
-            _workingStack.Peek().Inlines.Add(new LineBreak());
+            context.Stack.Peek().Inlines.Add(new LineBreak());
         }
 
-        void IAstVisitor.Visit(ImgNode node)
+        void IAstVisitor<ParsingContext>.Visit(ImgNode node, ParsingContext context)
         {
-            _workingStack.Peek().Inlines.Add(new InlineUIContainer()
+            context.Stack.Peek().Inlines.Add(new InlineUIContainer()
             {
                 Child = new Border()
                 {
@@ -75,14 +80,18 @@ namespace HTMLRenderer
             });
         }
 
-        void IAstVisitor.Visit(ParagraphNode node)
+        void IAstVisitor<ParsingContext>.Visit(ParagraphNode node, ParsingContext context)
         {
-            _workingStack.Push(new Paragraph());
-            var p = _workingStack.Pop();
-            _blocks.Add(p);
+            context.Stack.Push(new Paragraph());
+            foreach (var item in node.Children)
+            {
+                item.Accept(this, context);
+            }
+            var c = context.Stack.Pop();
+            context.Blocks.Add(c);
         }
 
-        void IAstVisitor.Visit(HrefNode node)
+        void IAstVisitor<ParsingContext>.Visit(HrefNode node, ParsingContext context)
         {
             Hyperlink h = new Hyperlink();
             
@@ -91,12 +100,12 @@ namespace HTMLRenderer
             link = Regex.Unescape(link);
             link = link.Substring(1, link.Length - 2);
             h.NavigateUri = new Uri(link,UriKind.Absolute);
-            _workingStack.Peek().Inlines.Add(h);
+            context.Stack.Peek().Inlines.Add(h);
         }
 
-        void IAstVisitor.Visit(TextNode node)
+        void IAstVisitor<ParsingContext>.Visit(TextNode node, ParsingContext context)
         {
-            _workingStack.Peek().Inlines.Add(new Run() { Text = node.Text.Text });
+            context.Stack.Peek().Inlines.Add(new Run() { Text = node.Text.Text });
         }
     }
     public class RichTextBlockExtension : DependencyObject
