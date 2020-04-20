@@ -29,7 +29,8 @@ namespace HTMLParser
                 {typeof(IHtmlImageElement),typeof(ImgNode) },
                 {typeof(IHtmlParagraphElement),typeof(ParagraphNode) },
                 {typeof(IHtmlBreakRowElement),typeof(BrNode) },
-                {typeof(IText),typeof(TextNode) }
+                {typeof(IText),typeof(TextNode) },
+                {typeof(IHtmlInlineFrameElement),typeof(IFrameNode) }
             };
         }
 
