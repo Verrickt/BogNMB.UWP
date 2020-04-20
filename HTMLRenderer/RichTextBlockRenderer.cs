@@ -32,11 +32,37 @@ namespace HTMLRenderer
     {
         public async Task<IReadOnlyList<Block>> RenderAsync(string html)
         {
-            var root = await AstHelper.FromHtml(html);
+            var root = await AstHelper.LoadHtmlAsync(html).ConfigureAwait(false);
             var context = new ParsingContext(1);
+            root.Content.Normalize();
             root.Accept(this,context);
             var res = context.Blocks.ToArray();
             return res;
+        }
+
+        void IAstVisitor<ParsingContext>.Visit(IFrameNode node, ParsingContext context)
+        {
+            var inner = node.Content.ContentHtml;
+            var root = AstHelper.LoadHtmlAsync(inner).Result;
+            var newContext = new ParsingContext(context.Level + 1);
+            root.Accept(this,newContext);
+            var panel = new InlineUIContainer();
+            var rtb = new RichTextBlock();
+            var bb = new Paragraph();
+            bb.Inlines.Add(new Run() { Text = $"Level {newContext.Level}" });
+            rtb.Blocks.Add(bb);
+            foreach (var item in newContext.Blocks) rtb.Blocks.Add(item);
+            var grid = new Grid()
+            {
+                Background = new SolidColorBrush(Colors.Red)
+            ,
+                Margin = new Thickness(12, 0, 0, 0)
+            };
+            grid.Children.Add(rtb);
+            panel.Child = grid;
+            var block = new Paragraph();
+            block.Inlines.Add(panel);
+            context.Blocks.Add(block);
         }
 
         void IAstVisitor<ParsingContext>.Visit(HTMLNode node,ParsingContext context)
@@ -96,7 +122,6 @@ namespace HTMLRenderer
         void IAstVisitor<ParsingContext>.Visit(HrefNode node, ParsingContext context)
         {
             Hyperlink h = new Hyperlink();
-            
             h.Inlines.Add(new Run() { Text = node.Content.Text });
             var link = node.Content.GetAttribute("href");
             link = Regex.Unescape(link);

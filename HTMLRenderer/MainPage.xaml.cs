@@ -28,7 +28,7 @@ namespace HTMLRenderer
     public sealed partial class MainPage : Page
     {
         private readonly BrowsingContext context;
-        string str = "<a href=\\\"https://music.163.com/#/song?id=498286570\\\" title=\\\"https://music.163.com/#/song?id=498286570\\\" target=\\\"_blank\\\" rel=\\\"nofollow noreferrer\\\"><i class=\\\"iconfont icon-015\\\"></i>网页链接</a><br />あよ的声音真好听[〃∀〃]";
+        string str = "<!DOCTYPE html>\r\n<html>\r\n<body>\r\n\r\n<iframe srcdoc=\"<p>Hello world!</p><iframe srcdoc='2323'></iframe>\" src=\"/demo/demo_iframe_srcdoc.html\">\r\n  <p>Your browser does not support iframes.</p>\r\n</iframe>\r\nthis is text\r\n<p><b>\u6CE8\u91CA\uFF1A</b>\u6240\u6709\u4E3B\u6D41\u6D4F\u89C8\u5668\u90FD\u652F\u6301 srcdoc \u5C5E\u6027\uFF0C\u9664\u4E86 Internet Explorer\u3002</p>\r\n\r\n</body>\r\n</html>\r\n";
         public MainPage()
         {
             this.InitializeComponent();
