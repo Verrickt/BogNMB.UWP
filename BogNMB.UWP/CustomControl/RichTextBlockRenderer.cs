@@ -20,7 +20,7 @@ namespace BogNMB.UWP.CustomControl
         public async Task<IReadOnlyList<Block>> RenderAsync(string html)
         {
             Debug.Assert(_workingStack.Count == 0);
-            var root = await AstHelper.FromHtml(html);
+            var root = await AstHelper.LoadHtmlAsync(html);
             root.Accept(this);
             Debug.Assert(_workingStack.Count == 0);
             var res = _blocks.ToArray();
