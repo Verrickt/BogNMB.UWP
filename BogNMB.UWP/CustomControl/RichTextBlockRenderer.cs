@@ -11,24 +11,44 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Shapes;
 
 namespace BogNMB.UWP.CustomControl
 {
+    public static class BlockCollectionExtension
+    {
+        public static void Trim(this List<Paragraph> collection)
+        {
+            if (collection.Count == 1) return;
+            foreach (var para in collection.OfType<Paragraph>())
+            {
+                if (para.Inlines.Count != 0) continue;
+                collection.Remove(para);
+            }
+            if(collection.Count==0) { collection.Add(new Paragraph()); }
+        }
+    }
     class ParsingContext
     {
         public Stack<Paragraph> Stack { get; private set; }
-        public List<Block> Blocks { get; private set; }
+        public List<Paragraph> Blocks { get; private set; }
         public int Level { get; private set; }
         public ParsingContext(int level)
         {
             Level = level;
             Stack = new Stack<Paragraph>();
-            Blocks = new List<Block>();
+            Blocks = new List<Paragraph>();
         }
     }
 
     public class RichTextBlockRenderer : IAstVisitor<ParsingContext>
     {
+        public IReadOnlyList<Block> Render(IAstNode node)
+        {
+            var context = new ParsingContext(1);
+            node.Accept(this, context);
+            return context.Blocks.Trim().ToArray();
+        }
         public async Task<IReadOnlyList<Block>> RenderAsync(string html)
         {
             var root = await AstHelper.LoadHtmlAsync(html).ConfigureAwait(false);
