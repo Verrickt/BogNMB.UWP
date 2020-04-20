@@ -40,7 +40,7 @@ namespace BogNMB.API.Controllers
             try
             {
                 var path = string.Format("{0}\\{1}\\{2}", ApiMode, p1, p2);
-                response = await _client.GetAsync(path);
+                response = await _client.GetAsync(path).ConfigureAwait(false);
                 response.EnsureSuccessStatusCode();
                 var str = await response.Content.ReadAsStringAsync();
                 if (TryGetBogError(str,out var errno))

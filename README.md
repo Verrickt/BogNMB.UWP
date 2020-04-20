@@ -12,7 +12,7 @@
 ## TODO(降序)
 - Test和Production的API切换
 - <del>处理HTML标签</del> DONE!
-- 对串号的解析和排版
+- <del>对串号的解析和排版</del> DONE!
 - 图文混合排版
 - 发串相关API接入
 - 黑/白/自适应主题

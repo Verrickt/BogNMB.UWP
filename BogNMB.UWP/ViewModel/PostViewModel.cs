@@ -1,7 +1,9 @@
 ﻿using BogNMB.API;
 using BogNMB.API.Controllers;
 using BogNMB.API.POCOs;
+using BogNMB.UWP.Model;
 using GalaSoft.MvvmLight;
+using HTMLParser;
 using Microsoft.Toolkit.Collections;
 using Microsoft.Toolkit.Uwp;
 using Newtonsoft.Json;
@@ -105,10 +107,12 @@ namespace BogNMB.UWP.ViewModel
 
     public class ThreadLoader : IIncrementalSource<ThreadViewModel>
     {
+        private ReferenceResolver resolver;
         private Post _post;
         public ThreadLoader(Post post)
         {
             _post = post;
+            resolver = new ReferenceResolver();
         }
         public async Task<IEnumerable<ThreadViewModel>> GetPagedItemsAsync(int pageIndex, int pageSize, CancellationToken cancellationToken = default)
         {
@@ -118,13 +122,23 @@ namespace BogNMB.UWP.ViewModel
                 return Enumerable.Empty<ThreadViewModel>();
             }
             var pc = new ThreadController(Config.ApiConfig);
-            var threads = await pc.GetThreadsAsync(_post.No, pageIndex+1);
+            var pocos = await pc.GetThreadsAsync(_post.No, pageIndex+1);
             if (pageIndex == 0)
             {
                 var SelfAsJson = (Thread)JsonConvert.DeserializeObject(JsonConvert.SerializeObject(_post), typeof(Thread));
-                threads.Insert(0, SelfAsJson);
+                pocos.Insert(0, SelfAsJson);
             }
-            return threads.Select(i => new ThreadViewModel(i, _post.Id));
+            var threads = pocos.Select(i => new ThreadViewModel(i, _post.Id)).ToList();
+            var ui = Task.Yield();
+            await Task.Delay(10).ConfigureAwait(false);
+            foreach (var t in threads) t.AstNodeTask = AstHelper.LoadHtmlAsync(t.Content);
+            var result = await Task.WhenAll(threads.Select(i => i.AstNodeTask));
+            foreach (var item in result)
+            {
+                resolver.Resolve(item, new ResolveContext() { Controller = new ReplyController(Config.ApiConfig) });
+            }
+            await ui;
+            return threads;
         }
     }
 }

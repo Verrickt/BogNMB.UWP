@@ -6,14 +6,14 @@ namespace HTMLParser
 {
     public class BodyNode : IAstNode
     {
-        public T Accept<T>(IAstVisitor<T> visitor)
+        public T Accept<T,U>(IAstVisitor<T,U> visitor,U context)
         {
-            return visitor.Visit(this);
+            return visitor.Visit(this,context);
         }
 
-        public void Accept(IAstVisitor visitor)
+        public void Accept<U>(IAstVisitor<U> visitor,U context)
         {
-             visitor.Visit(this);
+             visitor.Visit(this,context);
         }
 
         public List<IAstNode> Children { get; private set; }

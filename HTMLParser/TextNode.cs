@@ -10,13 +10,16 @@ namespace HTMLParser
         }
 
         public IText Text { get; private set; }
-        public void Accept(IAstVisitor visitor)
+        public HTMLNode Refer { get; set; }
+
+        public T Accept<T, U>(IAstVisitor<T, U> visitor, U context)
         {
-            visitor.Visit(this);
+            return visitor.Visit(this, context);
         }
-        public T Accept<T>(IAstVisitor<T> visitor)
+
+        public void Accept<U>(IAstVisitor<U> visitor, U context)
         {
-            return visitor.Visit(this);
+            visitor.Visit(this, context);
         }
     }
 }

@@ -6,9 +6,14 @@ namespace HTMLParser
 {
     public class OtherNode : IAstNode
     {
-        public T Accept<T>(IAstVisitor<T> visitor)
+        public T Accept<T, U>(IAstVisitor<T, U> visitor, U context)
         {
-            return visitor.Visit(this);
+            return visitor.Visit(this, context);
+        }
+
+        public void Accept<U>(IAstVisitor<U> visitor, U context)
+        {
+            visitor.Visit(this, context);
         }
         public List<IAstNode> Children { get; private set; }
         public OtherNode(INode content)
@@ -16,10 +21,7 @@ namespace HTMLParser
             Content = content;
             Children = AstHelper.TryCreateNodes(content.ChildNodes.ToList()).ToList();
         }
-        public void Accept(IAstVisitor visitor)
-        {
-            visitor.Visit(this);
-        }
+     
         public INode Content { get; private set; }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace HTMLParser
 {
-    public class ImgNode : IAstNode
+    public class IFrameNode : IAstNode
     {
         public T Accept<T, U>(IAstVisitor<T, U> visitor, U context)
         {
@@ -13,11 +13,11 @@ namespace HTMLParser
         {
             visitor.Visit(this, context);
         }
-        public ImgNode(IHtmlImageElement content)
+        public IFrameNode(IHtmlInlineFrameElement content)
         {
             Content = content;
         }
-       
-        public IHtmlImageElement Content { get; private set; }
+
+        public IHtmlInlineFrameElement Content { get; private set; }
     }
 }

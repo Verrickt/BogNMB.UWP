@@ -1,5 +1,8 @@
 ﻿using BogNMB.API.POCOs;
 using GalaSoft.MvvmLight;
+using HTMLParser;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BogNMB.UWP.ViewModel
 {
@@ -20,6 +23,8 @@ namespace BogNMB.UWP.ViewModel
         private string _fullImgSrc;
         public bool ShowImage { get; private set; }
         public string ImageSource { get; set; }
+
+        public Task<HTMLNode> AstNodeTask { get; set; }
         public ThreadViewModel(Thread thread,string poCookie)
         {
             IsAdmin = thread.Admin != 0;

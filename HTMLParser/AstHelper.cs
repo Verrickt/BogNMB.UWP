@@ -10,11 +10,11 @@ namespace HTMLParser
 {
     public static class AstHelper
     {
-        public static async Task<HTMLNode> FromHtml(string str)
+        public static async Task<HTMLNode> LoadHtmlAsync(string str)
         {
             var config = Configuration.Default;
             var context = new BrowsingContext(config);
-            var document = await context.OpenAsync(req => req.Content(str));
+            var document = await context.OpenAsync(req => req.Content(str??string.Empty));
             var documentNode = new HTMLNode((IHtmlHtmlElement)document.DocumentElement);
             return documentNode;
         }
@@ -29,7 +29,8 @@ namespace HTMLParser
                 {typeof(IHtmlImageElement),typeof(ImgNode) },
                 {typeof(IHtmlParagraphElement),typeof(ParagraphNode) },
                 {typeof(IHtmlBreakRowElement),typeof(BrNode) },
-                {typeof(IText),typeof(TextNode) }
+                {typeof(IText),typeof(TextNode) },
+                {typeof(IHtmlInlineFrameElement),typeof(IFrameNode) }
             };
         }
 
