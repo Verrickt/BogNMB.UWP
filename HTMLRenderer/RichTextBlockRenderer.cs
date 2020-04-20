@@ -23,6 +23,8 @@ namespace HTMLRenderer
         public ParsingContext(int level)
         {
             Level = level;
+            Stack = new Stack<Paragraph>();
+            Blocks = new List<Block>();
         }
     }
     
