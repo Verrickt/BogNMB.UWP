@@ -17,7 +17,7 @@ namespace BogNMB.API.Controllers
 
         public async Task<Reply> GetReplyAsync(string id)
         {
-            var json = await GetAsync(id, "0");
+            var json = await GetAsync(id, "0").ConfigureAwait(false);
             return JsonConvert.DeserializeObject<Reply>(json);
         }
     }
