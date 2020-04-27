@@ -10,7 +10,7 @@
 - 图片显示
 
 ## TODO(降序)
-- Test和Production的API切换
+- <del>Test和Production的API切换</del> DONE!
 - <del>处理HTML标签</del> DONE!
 - <del>对串号的解析和排版</del> DONE!
 - 图文混合排版
