@@ -8,6 +8,8 @@
     mc:Ignorable="d"
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:ext="using:BogNMB.UWP.CustomControl"
+    xmlns:Interactivity="using:Microsoft.Xaml.Interactivity" 
+    xmlns:Interactions="using:Microsoft.Xaml.Interactions.Core"
     d:DesignHeight="300"
     d:DesignWidth="400">
 
@@ -96,19 +98,29 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
             <ListView.Footer>
-                <StackPanel Height="40" Margin="5,0" HorizontalAlignment="Center" Orientation="Horizontal">
-                    <ProgressRing Margin="5,0" 
+                <RelativePanel Height="40" Margin="5,0" HorizontalAlignment="Center" >
+                    <ProgressRing Margin="10,0" 
+                                  RelativePanel.AlignVerticalCenterWithPanel="True"
+                                  RelativePanel.LeftOf="bible"
                                   IsActive="{Binding Posts.IsLoading}"></ProgressRing>
-                    <TextBlock VerticalAlignment="Center"
+
+                    <TextBlock VerticalAlignment="Center"  
+                               x:Name="bible"
+                               RelativePanel.AlignHorizontalCenterWithPanel="True"
+                               RelativePanel.AlignVerticalCenterWithPanel="True"
                                Text="{Binding FooterText}"
-                               ></TextBlock>
-                    <TextBlock    VerticalAlignment="Center">
-                        <Run>IsLoading</Run>
-                        <Run Text="{Binding Posts.IsLoading}"></Run>
-                        <Run>hasMore</Run>
-                        <Run Text="{Binding Posts.HasMoreItems}"></Run>
+                               >
+                        <Interactivity:Interaction.Behaviors>
+                            <Interactions:EventTriggerBehavior
+                                 EventName="Tapped"
+                                >
+                                <Interactions:InvokeCommandAction
+                                    Command="{Binding RefreshCommand}"
+                                    ></Interactions:InvokeCommandAction>
+                            </Interactions:EventTriggerBehavior>
+                        </Interactivity:Interaction.Behaviors>
                     </TextBlock>
-                </StackPanel>
+                </RelativePanel>
             </ListView.Footer>
 
         </ListView>

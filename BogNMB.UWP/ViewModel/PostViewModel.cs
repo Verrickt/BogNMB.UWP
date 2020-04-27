@@ -3,6 +3,7 @@ using BogNMB.API.Controllers;
 using BogNMB.API.POCOs;
 using BogNMB.UWP.Model;
 using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
 using HTMLParser;
 using Microsoft.Toolkit.Collections;
 using Microsoft.Toolkit.Uwp;
@@ -47,7 +48,8 @@ namespace BogNMB.UWP.ViewModel
             set { Set(ref _footerText, value); }
         }
 
-
+        public RelayCommand RefreshCommand { get; private set; }
+        private bool _onError;
         public PostViewModel(Post post)
         {
             _post = post;
@@ -66,11 +68,12 @@ namespace BogNMB.UWP.ViewModel
             _loader = new ThreadLoader(_post);
             Threads = new IncrementalLoadingCollection<ThreadLoader, ThreadViewModel>(
                 new ThreadLoader(this._post), 20,
-                () => { FooterText = "丧尸->朱军->诸君->肥肥"; }
-                , () => { FooterText = "加载完毕.点击刷新"; },
-                (ex) => { FooterText = "加载出错.点击重试"; });
+                () => { _onError = false; FooterText = "丧尸->朱军->诸君->肥肥";RefreshCommand.RaiseCanExecuteChanged(); }
+                , () => { if(!_onError) FooterText = "加载完毕.点击刷新"; RefreshCommand.RaiseCanExecuteChanged(); },
+                (ex) => { FooterText = "加载出错.点击重试";_onError = true; RefreshCommand.RaiseCanExecuteChanged(); });
             ImageSource = "http:" + _thumbSrc;
             ShowImage = !string.IsNullOrEmpty((_thumbSrc ?? _fullImgSrc));
+            RefreshCommand = new RelayCommand(() => { Threads.RefreshAsync(); }, () => !Threads.IsLoading, true);
         }
         private IncrementalLoadingCollection<ThreadLoader, ThreadViewModel> _threads;
         private readonly ThreadLoader _loader;
@@ -86,9 +89,7 @@ namespace BogNMB.UWP.ViewModel
             }
         }
 
-        public void Cancel()
-        {
-        }
+        
     }
 
     public class TimedOutIncrementalLoadingCollection<TSource, IType> : IncrementalLoadingCollection<TSource, IType>

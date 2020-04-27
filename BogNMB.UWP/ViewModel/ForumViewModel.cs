@@ -1,6 +1,7 @@
 ﻿using BogNMB.API.Controllers;
 using BogNMB.API.POCOs;
 using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
 using Microsoft.Toolkit.Collections;
 using Microsoft.Toolkit.Uwp;
 using System.Collections.Generic;
@@ -46,16 +47,20 @@ namespace BogNMB.UWP.ViewModel
             set { Set(ref _desc, value); }
         }
 
+        private bool _onError = false;
+
+        public RelayCommand RefreshCommand { get; private set; }
+
         public ForumViewModel(Forum forum)
         {
             Name = forum.Name;
             ID = forum.Id;
             Posts = new IncrementalLoadingCollection<PostLoader, PostViewModel>(
                 new PostLoader(this), 20,
-                () => { FooterText = "丧尸->朱军->诸君->肥肥"; }
-                , () => { FooterText = "加载完毕.点击刷新"; },
-                (ex) => { FooterText = "加载出错.点击重试"; });
-
+                () => { _onError = false; FooterText = "丧尸->朱军->诸君->肥肥";RefreshCommand.RaiseCanExecuteChanged(); }
+                , () => { if(!_onError) FooterText = "加载完毕.点击刷新"; RefreshCommand.RaiseCanExecuteChanged(); },
+                (ex) => { _onError = true; FooterText = "加载出错.点击重试"; RefreshCommand.RaiseCanExecuteChanged(); });
+            RefreshCommand = new RelayCommand(()=> { Posts.RefreshAsync(); },()=> !Posts.IsLoading,true);
         }
 
         public IncrementalLoadingCollection<PostLoader, PostViewModel> Posts
