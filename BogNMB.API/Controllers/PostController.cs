@@ -17,7 +17,7 @@ namespace BogNMB.API.Controllers
         {
             var json = await GetAsync(forumId.ToString(), page.ToString());
             var res = JsonConvert.DeserializeObject(json, typeof(List<Post>));
-            return res as List<Post>;
+            return res as List<Post>??new List<Post>();
         }
 
     }
