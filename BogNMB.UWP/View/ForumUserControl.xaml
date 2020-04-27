@@ -18,28 +18,41 @@
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
-        <ListView >
+        <ListView x:Name="list" >
             <ListView.Header>
-                <StackPanel Orientation="Horizontal"  Height="48">
-                    <Grid Height="48" Width="48" >
-                        <controls:ImageEx
+                <ComboBox Height="48" BorderThickness="0"
+                          Padding="0"
+                          HorizontalAlignment="Stretch"
+                          SelectedItem="{Binding CurrentApiMode,Mode=TwoWay}"
+                          ItemsSource="{Binding ApiModes}">
+                    <ComboBox.ItemContainerStyle>
+                        <Style TargetType="ComboBoxItem">
+                            <Setter Property="Padding" Value="0"></Setter>
+                            <Setter Property="Margin" Value="0"></Setter>
+                        </Style>
+                    </ComboBox.ItemContainerStyle>
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal"  Height="48">
+                                <Grid Height="40" Width="40" >
+                                    <controls:ImageEx
                        HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             Stretch="Uniform"
-                        Source="/Assets/22.gif"
+                        Source="{Binding ImagePath}"
                         
                         ></controls:ImageEx>
-                    </Grid>
-                    <TextBlock
-                        Margin="4,0,0,0"
-                        FontSize="20"
-                        VerticalAlignment="Center"
-                        >B岛-BOG匿名版</TextBlock>
-                </StackPanel>
+                                </Grid>
+                                <TextBlock VerticalAlignment="Center"
+                                    Text="{Binding DisplayName}"
+                        ></TextBlock>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
             </ListView.Header>
             <ListView.Footer>
-                <Border  Background="Red">
-                    <TextBlock HorizontalAlignment="Center">我是分割线</TextBlock>
+                <Border  Height="1" Background="Gray">
                 </Border>
             </ListView.Footer>
             <ListView.Items>
