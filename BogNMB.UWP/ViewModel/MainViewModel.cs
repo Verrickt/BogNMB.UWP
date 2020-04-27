@@ -13,7 +13,20 @@ using System.Threading.Tasks;
 
 namespace BogNMB.UWP.ViewModel
 {
-    public class MainViewModel : ViewModelBase
+    public class MyViewModelBase:ViewModelBase
+    {
+        public MyViewModelBase()
+        {
+            MessengerInstance.Register<PropertyChangedMessage<ApiConfig>>(this,
+                (t) => {
+                    OnApiModeChanged(t.NewValue);
+                });
+        }
+        protected virtual void OnApiModeChanged(ApiConfig config)
+        { }
+    }
+
+    public class MainViewModel : MyViewModelBase
     {
         private readonly LocalObjectStorageHelper _storageHelper=new LocalObjectStorageHelper();
         private const string forum_cache_key = "forums";
