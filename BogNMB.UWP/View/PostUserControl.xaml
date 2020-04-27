@@ -98,16 +98,15 @@
             <ListView.Footer>
                 <StackPanel Height="40" Margin="5,0" HorizontalAlignment="Center" Orientation="Horizontal">
                     <ProgressRing Margin="5,0" 
-                                  DataContext="{Binding Posts}"
-                                  IsActive="{Binding IsLoading}"></ProgressRing>
+                                  IsActive="{Binding Posts.IsLoading}"></ProgressRing>
                     <TextBlock VerticalAlignment="Center"
                                Text="{Binding FooterText}"
                                ></TextBlock>
-                    <TextBlock   DataContext="{Binding Posts}"  VerticalAlignment="Center">
+                    <TextBlock    VerticalAlignment="Center">
                         <Run>IsLoading</Run>
-                        <Run Text="{Binding IsLoading}"></Run>
+                        <Run Text="{Binding Posts.IsLoading}"></Run>
                         <Run>hasMore</Run>
-                        <Run Text="{Binding HasMoreItems}"></Run>
+                        <Run Text="{Binding Posts.HasMoreItems}"></Run>
                     </TextBlock>
                 </StackPanel>
             </ListView.Footer>
