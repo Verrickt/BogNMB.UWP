@@ -8,6 +8,8 @@
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     mc:Ignorable="d"
     d:DesignHeight="300"
+    xmlns:Interactivity="using:Microsoft.Xaml.Interactivity" 
+    xmlns:Interactions="using:Microsoft.Xaml.Interactions.Core"
     Loaded="UserControl_Loaded"
     d:DesignWidth="400">
 
@@ -41,7 +43,18 @@
                 </Border>
             </ListView.Footer>
             <ListView.Items>
-                <TextBlock>刷新</TextBlock>
+                <ListViewItem IsTapEnabled="True" >
+                    <Interactivity:Interaction.Behaviors>
+                        <Interactions:EventTriggerBehavior
+                                 EventName="Tapped"
+                                >
+                            <Interactions:InvokeCommandAction
+                                    Command="{Binding RefreshForumsCommand}"
+                                    ></Interactions:InvokeCommandAction>
+                        </Interactions:EventTriggerBehavior>
+                    </Interactivity:Interaction.Behaviors>
+                    <TextBlock>刷新</TextBlock>
+                </ListViewItem>
                 <TextBlock>设置</TextBlock>
             </ListView.Items>
         </ListView>
