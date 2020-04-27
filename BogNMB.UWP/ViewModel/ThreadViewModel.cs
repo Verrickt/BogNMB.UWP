@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BogNMB.UWP.ViewModel
 {
-    public class ThreadViewModel:ViewModelBase
+    public class ThreadViewModel: MyViewModelBase
     {
         public bool IsAdmin { get; }
         public bool Saged { get; }

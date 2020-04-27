@@ -1,5 +1,7 @@
-﻿using BogNMB.API.Controllers;
+﻿using BogNMB.API;
+using BogNMB.API.Controllers;
 using BogNMB.API.POCOs;
+using BogNMB.UWP.Util;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Microsoft.Toolkit.Collections;
@@ -12,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace BogNMB.UWP.ViewModel
 {
-    public class ForumViewModel : ViewModelBase
+    public class ForumViewModel : MyViewModelBase
     {
 
         private string _name;
@@ -51,15 +53,23 @@ namespace BogNMB.UWP.ViewModel
 
         public RelayCommand RefreshCommand { get; private set; }
 
-        public ForumViewModel(Forum forum)
+        protected override void OnApiModeChanged(ApiConfig config)
+        {
+            Posts = new IncrementalLoadingCollection<PostLoader, PostViewModel>(
+                new PostLoader(this,config), 20,
+                () => { _onError = false; FooterText = Bible.OnLoading; RefreshCommand.RaiseCanExecuteChanged(); }
+                , () => { if (!_onError) FooterText = Bible.OnFinished; RefreshCommand.RaiseCanExecuteChanged(); },
+                (ex) => { FooterText = Bible.OnError; _onError = true; RefreshCommand.RaiseCanExecuteChanged(); });
+        }
+        public ForumViewModel(Forum forum,ApiConfig config)
         {
             Name = forum.Name;
             ID = forum.Id;
             Posts = new IncrementalLoadingCollection<PostLoader, PostViewModel>(
-                new PostLoader(this), 20,
-                () => { _onError = false; FooterText = "丧尸->朱军->诸君->肥肥";RefreshCommand.RaiseCanExecuteChanged(); }
-                , () => { if(!_onError) FooterText = "加载完毕.点击刷新"; RefreshCommand.RaiseCanExecuteChanged(); },
-                (ex) => { _onError = true; FooterText = "加载出错.点击重试"; RefreshCommand.RaiseCanExecuteChanged(); });
+                new PostLoader(this, config), 20,
+                () => { _onError = false; FooterText = Bible.OnLoading; RefreshCommand.RaiseCanExecuteChanged(); }
+                , () => { if (!_onError) FooterText = Bible.OnFinished; RefreshCommand.RaiseCanExecuteChanged(); },
+                (ex) => { FooterText = Bible.OnError; _onError = true; RefreshCommand.RaiseCanExecuteChanged(); });
             RefreshCommand = new RelayCommand(()=> { Posts.RefreshAsync(); },()=> !Posts.IsLoading,true);
         }
 
@@ -89,17 +99,19 @@ namespace BogNMB.UWP.ViewModel
     public class PostLoader : IIncrementalSource<PostViewModel>
     {
         private readonly ForumViewModel _forum;
+        private readonly ApiConfig _config;
 
-        public PostLoader(ForumViewModel forum)
+        public PostLoader(ForumViewModel forum,ApiConfig config)
         {
             _forum = forum;
+            this._config = config;
         }
 
         public async Task<IEnumerable<PostViewModel>> GetPagedItemsAsync(int pageIndex, int pageSize, CancellationToken cancellationToken = default)
         {
-            var pc = new PostController(Config.ApiConfig);
+            var pc = new PostController(_config);
             var posts = await pc.GetPostAsync(_forum.ID, pageIndex + 1);
-            return posts.Select(i => new PostViewModel(i));
+            return posts.Select(i => new PostViewModel(i,_config));
         }
     }
 }

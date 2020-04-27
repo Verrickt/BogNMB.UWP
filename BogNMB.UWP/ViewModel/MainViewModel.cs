@@ -3,6 +3,7 @@ using BogNMB.API.Controllers;
 using BogNMB.API.POCOs;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Toolkit.Uwp.Helpers;
 using System;
 using System.Collections.Generic;
@@ -52,54 +53,75 @@ namespace BogNMB.UWP.ViewModel
         {
             get { return _currentApiMode; }
             set 
-            { 
-                if(_currentApiMode!=null&&_currentApiMode!=value)
+            {
+                
+                if (_currentApiMode!=null&&_currentApiMode!=value)
                 {
-                    Task.Run(() => { _storageHelper.Save(current_api_key, value); });
+                    MessengerInstance.Send(new PropertyChangedMessage<ApiConfig>(_currentApiMode?.ApiConfig
+                    , value.ApiConfig, nameof(value.ApiConfig)));
                 }
                 Set(ref _currentApiMode, value);
             }
         }
 
-
         public RelayCommand RefreshForumsCommand { get;private set; }
+
+        protected override void OnApiModeChanged(ApiConfig config)
+        {
+            //This needs UI context since we're dealing with ObservableCollection
+            rebuildForumListAsync(config);
+            //
+            Task.Run(async() =>
+            {
+                //nothing big deal, thread pool should suffice
+                await _storageHelper.SaveFileAsync(forum_cache_key, new List<Forum>());
+                _storageHelper.Save(current_api_key, config);
+            });
+        }
 
         public MainViewModel()
         {
+
             Forums = new ObservableCollection<ForumViewModel>();
             RefreshForumsCommand = new RelayCommand(async() =>
             {
-                var pocos = await new ForumController(Config.ApiConfig).GetForumsAsync();
+                var pocos = await new ForumController(CurrentApiMode.ApiConfig).GetForumsAsync();
                 await _storageHelper.SaveFileAsync(forum_cache_key, pocos);
                 _forums.Clear();
-                pocos.ForEach(i => _forums.Add(new ForumViewModel(i)));
+                pocos.ForEach(i => _forums.Add(new ForumViewModel(i,CurrentApiMode.ApiConfig)));
                 SelectedForum = Forums.FirstOrDefault();
             });
             ApiModes = new ObservableCollection<ApiModeViewModel>(ApiModeViewModel.CreateApis());
         }
         public async Task InitializeAsync()
         {
-            if(_storageHelper.KeyExists(current_api_key))
+            if (_storageHelper.KeyExists(current_api_key))
             {
-                var model = _storageHelper.Read<ApiModeViewModel>(current_api_key);
-                CurrentApiMode = ApiModes.First(i => i.ApiConfig == model.ApiConfig);
+                var config = _storageHelper.Read<ApiConfig>(current_api_key);
+                CurrentApiMode = ApiModes.First(i => i.ApiConfig == config);
             }
             else
             {
                 CurrentApiMode = ApiModes.First();
+                _storageHelper.Save(current_api_key, CurrentApiMode.ApiConfig);
             }
-            _storageHelper.Save(current_api_key, CurrentApiMode);
-            List<Forum> pocos;
-            if(await _storageHelper.FileExistsAsync(forum_cache_key))
+            await rebuildForumListAsync(CurrentApiMode.ApiConfig);
+        }
+
+        private async Task rebuildForumListAsync(ApiConfig config)
+        {
+            List<Forum> pocos = null;
+            if (await _storageHelper.FileExistsAsync(forum_cache_key))
             {
                 pocos = await _storageHelper.ReadFileAsync<List<Forum>>(forum_cache_key);
             }
-            else
+            if (pocos.Count == 0)
             {
-                pocos = await new ForumController(Config.ApiConfig).GetForumsAsync();
+                pocos = await new ForumController(config).GetForumsAsync();
                 await _storageHelper.SaveFileAsync(forum_cache_key, pocos);
             }
-            pocos.ForEach(i => _forums.Add(new ForumViewModel(i)));
+            _forums.Clear();
+            pocos.ForEach(i => _forums.Add(new ForumViewModel(i, config)));
             SelectedForum = Forums.FirstOrDefault();
         }
 

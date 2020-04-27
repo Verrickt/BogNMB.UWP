@@ -2,6 +2,7 @@
 using BogNMB.API.Controllers;
 using BogNMB.API.POCOs;
 using BogNMB.UWP.Model;
+using BogNMB.UWP.Util;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using HTMLParser;
@@ -19,11 +20,7 @@ using Thread = BogNMB.API.POCOs.Thread;
 
 namespace BogNMB.UWP.ViewModel
 {
-    class Config
-    {
-        public static ApiConfig ApiConfig => ApiConfig.Test;
-    }
-    public class PostViewModel : ViewModelBase
+    public class PostViewModel : MyViewModelBase
     {
         public bool IsAdmin { get; }
         public bool Saged { get; }
@@ -50,7 +47,17 @@ namespace BogNMB.UWP.ViewModel
 
         public RelayCommand RefreshCommand { get; private set; }
         private bool _onError;
-        public PostViewModel(Post post)
+
+        protected override void OnApiModeChanged(ApiConfig config)
+        {
+            Threads = new IncrementalLoadingCollection<ThreadLoader, ThreadViewModel>(
+                new ThreadLoader(this._post,config), 20,
+                () => { _onError = false; FooterText = Bible.OnLoading; RefreshCommand.RaiseCanExecuteChanged(); }
+                , () => { if (!_onError) FooterText = Bible.OnFinished; RefreshCommand.RaiseCanExecuteChanged(); },
+                (ex) => { FooterText = Bible.OnError; _onError = true; RefreshCommand.RaiseCanExecuteChanged(); });
+        }
+
+        public PostViewModel(Post post,ApiConfig config)
         {
             _post = post;
             IsAdmin = post.Admin != 0;
@@ -65,12 +72,11 @@ namespace BogNMB.UWP.ViewModel
             No = post.No;
             _thumbSrc = post.Img;
             _fullImgSrc = post.Src;
-            _loader = new ThreadLoader(_post);
             Threads = new IncrementalLoadingCollection<ThreadLoader, ThreadViewModel>(
-                new ThreadLoader(this._post), 20,
-                () => { _onError = false; FooterText = "丧尸->朱军->诸君->肥肥";RefreshCommand.RaiseCanExecuteChanged(); }
-                , () => { if(!_onError) FooterText = "加载完毕.点击刷新"; RefreshCommand.RaiseCanExecuteChanged(); },
-                (ex) => { FooterText = "加载出错.点击重试";_onError = true; RefreshCommand.RaiseCanExecuteChanged(); });
+                            new ThreadLoader(this._post, config), 20,
+                            () => { _onError = false; FooterText = Bible.OnLoading; RefreshCommand.RaiseCanExecuteChanged(); }
+                            , () => { if (!_onError) FooterText = Bible.OnFinished; RefreshCommand.RaiseCanExecuteChanged(); },
+                            (ex) => { FooterText = Bible.OnError; _onError = true; RefreshCommand.RaiseCanExecuteChanged(); });
             ImageSource = "http:" + _thumbSrc;
             ShowImage = !string.IsNullOrEmpty((_thumbSrc ?? _fullImgSrc));
             RefreshCommand = new RelayCommand(() => { Threads.RefreshAsync(); }, () => !Threads.IsLoading, true);
@@ -110,10 +116,12 @@ namespace BogNMB.UWP.ViewModel
     {
         private ReferenceResolver resolver;
         private Post _post;
-        public ThreadLoader(Post post)
+        private ApiConfig _config;
+        public ThreadLoader(Post post,ApiConfig config)
         {
             _post = post;
             resolver = new ReferenceResolver();
+            _config =config;
         }
         public async Task<IEnumerable<ThreadViewModel>> GetPagedItemsAsync(int pageIndex, int pageSize, CancellationToken cancellationToken = default)
         {
@@ -122,7 +130,7 @@ namespace BogNMB.UWP.ViewModel
             {
                 return Enumerable.Empty<ThreadViewModel>();
             }
-            var pc = new ThreadController(Config.ApiConfig);
+            var pc = new ThreadController(_config);
             var pocos = await pc.GetThreadsAsync(_post.No, pageIndex+1);
             if (pageIndex == 0)
             {
@@ -136,7 +144,7 @@ namespace BogNMB.UWP.ViewModel
             var result = await Task.WhenAll(threads.Select(i => i.AstNodeTask));
             foreach (var item in result)
             {
-                resolver.Resolve(item, new ResolveContext() { Controller = new ReplyController(Config.ApiConfig) });
+                resolver.Resolve(item, new ResolveContext() { Controller = new ReplyController(_config) });
             }
             await ui;
             return threads;
