@@ -1,0 +1,22 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:BogNMB.UWP.Styles"
+    xmlns:customControl="using:BogNMB.UWP.CustomControl"
+    >
+    <Style TargetType="customControl:StretchContentControl">
+        <Setter Property="Margin" Value="0,2"></Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="customControl:StretchContentControl">
+                    <ContentPresenter
+                        x:Name="preserenter"
+                        Background="{TemplateBinding Background}"
+                        Margin="{TemplateBinding Padding}"
+                        Content="{TemplateBinding Content}"
+                        ></ContentPresenter>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

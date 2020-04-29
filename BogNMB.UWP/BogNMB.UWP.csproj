@@ -123,6 +123,7 @@
     <Compile Include="Converter\CookieToFontWeightConverter.cs" />
     <Compile Include="CustomControl\RichTextBlockExtension.cs" />
     <Compile Include="CustomControl\RichTextBlockRenderer.cs" />
+    <Compile Include="CustomControl\StretchContentControl.cs" />
     <Compile Include="IncrementalLoading\IncrementalLoadingCollection.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
@@ -174,6 +175,10 @@
     <Page Include="MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\CustomControlStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Styles\FrameStyle.xaml">
       <SubType>Designer</SubType>

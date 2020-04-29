@@ -176,22 +176,24 @@ namespace BogNMB.UWP.CustomControl
                 if (node.Refer != null)
                 {
                     var root = node.Refer;
+                    var rtb = new RichTextBlock();
+                    rtb.Margin = new Thickness(8, 4, 8, 4);
                     var newContext = new ParsingContext(context.Level + 1);
                     if (context.Colors.Count > 0)
                     {
                         newContext.Colors.Push(context.Colors.Peek());
                     }
                     var panel = new InlineUIContainer();
-
                     root.Accept(this, newContext);
                     newContext.Blocks.Trim();
-                    var rtb = new RichTextBlock();
 
                     foreach (var item in newContext.Blocks) rtb.Blocks.Add(item);
 
                     var grid = new Grid()
                     {
-                        Margin = new Thickness(0, 0, 0, 0)
+                        HorizontalAlignment = HorizontalAlignment.Stretch,
+                        VerticalAlignment = VerticalAlignment.Stretch,
+                        Background = new SolidColorBrush(Colors.Pink)
                     };
                     var rect = new Rectangle();
                     grid.Children.Add(rect);
@@ -203,8 +205,9 @@ namespace BogNMB.UWP.CustomControl
                     grid.Children.Add(rtb);
                     Grid.SetColumn(rect, 0);
                     Grid.SetColumn(rtb, 1);
-                    panel.Child = grid;
-
+                    var stretch = new StretchContentControl();
+                    stretch.Content = grid;
+                    panel.Child = stretch;
                     context.Stack.Peek().Inlines.Add(new LineBreak());
                     context.Stack.Peek().Inlines.Add(panel);
                 }
