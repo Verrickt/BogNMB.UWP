@@ -130,22 +130,19 @@ namespace BogNMB.UWP.ViewModel
                 return Enumerable.Empty<ThreadViewModel>();
             }
             var pc = new ThreadController(_config);
-            var pocos = await pc.GetThreadsAsync(_post.No, pageIndex+1);
+            var pocos = await pc.GetThreadsAsync(_post.No, pageIndex+1).ConfigureAwait(false);
             if (pageIndex == 0)
             {
                 var SelfAsJson = (Thread)JsonConvert.DeserializeObject(JsonConvert.SerializeObject(_post), typeof(Thread));
                 pocos.Insert(0, SelfAsJson);
             }
             var threads = pocos.Select(i => new ThreadViewModel(i, _post.Id)).ToList();
-            var ui = Task.Yield();
-            await Task.Delay(10).ConfigureAwait(false);
             foreach (var t in threads) t.AstNodeTask = AstHelper.LoadHtmlAsync(t.Content);
             var result = await Task.WhenAll(threads.Select(i => i.AstNodeTask));
             foreach (var item in result)
             {
                 resolver.Resolve(item, new ResolveContext() { Controller = new ReplyController(_config) });
             }
-            await ui;
             return threads;
         }
     }
