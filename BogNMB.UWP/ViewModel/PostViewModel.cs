@@ -1,13 +1,12 @@
 ﻿using BogNMB.API;
 using BogNMB.API.Controllers;
 using BogNMB.API.POCOs;
+using BogNMB.UWP.IncrementalLoading;
 using BogNMB.UWP.Model;
 using BogNMB.UWP.Util;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using HTMLParser;
-using Microsoft.Toolkit.Collections;
-using Microsoft.Toolkit.Uwp;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -79,7 +78,7 @@ namespace BogNMB.UWP.ViewModel
                             (ex) => { FooterText = Bible.OnError; _onError = true; RefreshCommand.RaiseCanExecuteChanged(); });
             ImageSource = "http:" + _thumbSrc;
             ShowImage = !string.IsNullOrEmpty((_thumbSrc ?? _fullImgSrc));
-            RefreshCommand = new RelayCommand(() => { Threads.RefreshAsync(); }, () => !Threads.IsLoading, true);
+            RefreshCommand = new RelayCommand(() => { if (_onError) Threads.RetryFailed(); else Threads.RefreshAsync(); }, () => !Threads.IsLoading, true);
         }
         private IncrementalLoadingCollection<ThreadLoader, ThreadViewModel> _threads;
         public IncrementalLoadingCollection<ThreadLoader, ThreadViewModel> Threads

@@ -1,11 +1,10 @@
 ﻿using BogNMB.API;
 using BogNMB.API.Controllers;
 using BogNMB.API.POCOs;
+using BogNMB.UWP.IncrementalLoading;
 using BogNMB.UWP.Util;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using Microsoft.Toolkit.Collections;
-using Microsoft.Toolkit.Uwp;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -70,7 +69,7 @@ namespace BogNMB.UWP.ViewModel
                 () => { _onError = false; FooterText = Bible.OnLoading; RefreshCommand.RaiseCanExecuteChanged(); }
                 , () => { if (!_onError) FooterText = Bible.OnFinished; RefreshCommand.RaiseCanExecuteChanged(); },
                 (ex) => { FooterText = Bible.OnError; _onError = true; RefreshCommand.RaiseCanExecuteChanged(); });
-            RefreshCommand = new RelayCommand(()=> { Posts.RefreshAsync(); },()=> !Posts.IsLoading,true);
+            RefreshCommand = new RelayCommand(() => { if (_onError) Posts.RetryFailed(); else Posts.RefreshAsync(); }, () => !Posts.IsLoading, true);
         }
 
         public IncrementalLoadingCollection<PostLoader, PostViewModel> Posts
