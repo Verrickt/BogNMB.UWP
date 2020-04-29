@@ -25,7 +25,7 @@ namespace BogNMB.API.Controllers
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));
             if (!_map.ContainsKey(config)) { 
-                var client = new HttpClient();
+                var client = new HttpClient(config.MessageHandler);
                 client.BaseAddress = new Uri(config.BaseUrl);
                 client.DefaultRequestHeaders.UserAgent.ParseAdd(config.DefaultUA);
                 client.Timeout = TimeSpan.FromSeconds(10);

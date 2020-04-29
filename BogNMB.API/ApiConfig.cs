@@ -1,4 +1,10 @@
-﻿using System;
+﻿using BogNMB.API.HTTPHandler;
+using log4net;
+using log4net.Config;
+using log4net.Repository;
+using System;
+using System.IO;
+using System.Net.Http;
 using System.Reflection;
 
 namespace BogNMB.API
@@ -14,6 +20,14 @@ namespace BogNMB.API
 		{
 			return BaseUrl.GetHashCode();
 		}
+
+		static ApiConfig()
+		{
+			ILoggerRepository repository = LogManager.GetRepository(Assembly.GetEntryAssembly());
+			XmlConfigurator.Configure(repository, new FileInfo("log4net.config"));
+		}
+
+		public HttpMessageHandler MessageHandler { get; set; } = new LoggingHttpHandler();
 
 		public override bool Equals(object obj)
 		{
