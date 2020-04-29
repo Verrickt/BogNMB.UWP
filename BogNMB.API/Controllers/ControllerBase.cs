@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -12,13 +13,26 @@ namespace BogNMB.API.Controllers
         private ApiConfig _config;
         private HttpClient _client;
         public abstract string ApiMode { get;  }
+
+        private static Dictionary<ApiConfig, HttpClient> _map;
+
+        static ControllerBase()
+        {
+            _map = new Dictionary<ApiConfig, HttpClient>();
+        }
+
         public ControllerBase(ApiConfig config)
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));
-            _client = new HttpClient();
-            _client.BaseAddress = new Uri(config.BaseUrl);
-            _client.DefaultRequestHeaders.UserAgent.ParseAdd(config.DefaultUA);
-            _client.Timeout = TimeSpan.FromSeconds(10);
+            if (!_map.ContainsKey(config)) { 
+                var client = new HttpClient();
+                client.BaseAddress = new Uri(config.BaseUrl);
+                client.DefaultRequestHeaders.UserAgent.ParseAdd(config.DefaultUA);
+                client.Timeout = TimeSpan.FromSeconds(10);
+                _map[config] = _client;
+            }
+            _client = _map[config];
+            
         }
         private bool TryGetBogError(string str,out int errno)
         {
