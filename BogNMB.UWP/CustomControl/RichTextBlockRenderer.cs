@@ -162,7 +162,8 @@ namespace BogNMB.UWP.CustomControl
 
         void IAstVisitor<ParsingContext>.Visit(TextNode node, ParsingContext context)
         {
-            if (node.Refer!=null)
+
+            if (node.HasReferer)
             {
                 {
                     var hyper = new Hyperlink();
@@ -171,40 +172,47 @@ namespace BogNMB.UWP.CustomControl
                     hyper.Inlines.Add(run);
                     context.Stack.Peek().Inlines.Add(hyper);
                 }
-                
-                //if (context.Level > 1) return;
-                var root = node.Refer;
-                var newContext = new ParsingContext(context.Level + 1);
-                if (context.Colors.Count > 0)
+
+                if (node.Refer != null)
                 {
-                    newContext.Colors.Push(context.Colors.Peek());
+                    var root = node.Refer;
+                    var newContext = new ParsingContext(context.Level + 1);
+                    if (context.Colors.Count > 0)
+                    {
+                        newContext.Colors.Push(context.Colors.Peek());
+                    }
+                    var panel = new InlineUIContainer();
+
+                    root.Accept(this, newContext);
+                    newContext.Blocks.Trim();
+                    var rtb = new RichTextBlock();
+
+                    foreach (var item in newContext.Blocks) rtb.Blocks.Add(item);
+
+                    var grid = new Grid()
+                    {
+                        Margin = new Thickness(0, 0, 0, 0)
+                    };
+                    var rect = new Rectangle();
+                    grid.Children.Add(rect);
+                    grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
+                    grid.ColumnDefinitions.Add(new ColumnDefinition());
+                    rect.Width = 8;
+                    rect.VerticalAlignment = VerticalAlignment.Stretch;
+                    rect.Fill = new SolidColorBrush(Colors.Red);
+                    grid.Children.Add(rtb);
+                    Grid.SetColumn(rect, 0);
+                    Grid.SetColumn(rtb, 1);
+                    panel.Child = grid;
+
+                    context.Stack.Peek().Inlines.Add(new LineBreak());
+                    context.Stack.Peek().Inlines.Add(panel);
                 }
-
-                root.Accept(this, newContext);
-                newContext.Blocks.Trim();
-                var rtb = new RichTextBlock();
-               
-                foreach (var item in newContext.Blocks) rtb.Blocks.Add(item);
-                
-                var panel = new InlineUIContainer();
-                var grid = new Grid()
+                else
                 {
-                    Margin = new Thickness(0, 0, 0, 0)
-                };
-                var rect = new Rectangle();
-                grid.Children.Add(rect);
-                grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
-                grid.ColumnDefinitions.Add(new ColumnDefinition());
-                rect.Width = 8;
-                rect.VerticalAlignment = VerticalAlignment.Stretch;
-                rect.Fill = new SolidColorBrush(Colors.Red);
-                grid.Children.Add(rtb);
-                Grid.SetColumn(rect, 0);
-                Grid.SetColumn(rtb, 1);
-                panel.Child = grid;
-
-                context.Stack.Peek().Inlines.Add(new LineBreak());
-                context.Stack.Peek().Inlines.Add(panel);
+                    context.Stack.Peek().Inlines.Add(new Run() { Text = " 引用解析失败", Foreground = new SolidColorBrush(Colors.Red) });
+                    context.Stack.Peek().Inlines.Add(new LineBreak());
+                }
             }
             else
             {

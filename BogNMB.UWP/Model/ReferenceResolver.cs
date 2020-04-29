@@ -70,9 +70,18 @@ namespace BogNMB.UWP.Model
                 string id = txt.Substring(txt.LastIndexOf('.') + 1);
                 if (int.TryParse(id, out var _))
                 {
-                    var reply = context.Controller.GetReplyAsync(id).ConfigureAwait(false)
+                    try
+                    {
+                        node.HasReferer = true;
+                        var reply = context.Controller.GetReplyAsync(id).ConfigureAwait(false)
                         .GetAwaiter().GetResult();
-                    node.Refer = AstHelper.LoadHtmlAsync(reply.Com).ConfigureAwait(false).GetAwaiter().GetResult();
+                        node.Refer = AstHelper.LoadHtmlAsync(reply.Com).ConfigureAwait(false).GetAwaiter().GetResult();
+                    }
+                    catch
+                    {
+
+                    }
+                    
                 }
             }
             return;
