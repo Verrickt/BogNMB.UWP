@@ -82,7 +82,6 @@ namespace BogNMB.UWP.ViewModel
             RefreshCommand = new RelayCommand(() => { Threads.RefreshAsync(); }, () => !Threads.IsLoading, true);
         }
         private IncrementalLoadingCollection<ThreadLoader, ThreadViewModel> _threads;
-        private readonly ThreadLoader _loader;
         public IncrementalLoadingCollection<ThreadLoader, ThreadViewModel> Threads
         {
             get
