@@ -11,6 +11,7 @@
         void Visit(HrefNode node, U context);
         void Visit(TextNode node, U context);
         void Visit(IFrameNode node, U context);
+        void Visit(FontNode node, U context);
     }
     public interface IAstVisitor<T,in U>
     {
@@ -23,5 +24,6 @@
         T Visit(HrefNode node, U context);
         T Visit(TextNode node, U context);
         T Visit(IFrameNode node, U context);
+        T Visit(FontNode node, U context);
     }
 }

@@ -12,11 +12,12 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Media;
-
+using Color = Windows.UI.Color;
 namespace HTMLRenderer
 {
     class ParsingContext
     {
+        public Stack<SolidColorBrush> Colors { get; private set; }
         public Stack<Paragraph> Stack { get; private set; }
         public List<Block> Blocks { get; private set; }
         public int Level { get; private set; }
@@ -25,11 +26,13 @@ namespace HTMLRenderer
             Level = level;
             Stack = new Stack<Paragraph>();
             Blocks = new List<Block>();
+            Colors = new Stack<SolidColorBrush>();
         }
     }
     
     public class RichTextBlockRenderer : IAstVisitor<ParsingContext>
     {
+        private static readonly ColorConverter colorConverter = new ColorConverter();
         public async Task<IReadOnlyList<Block>> RenderAsync(string html)
         {
             var root = await AstHelper.LoadHtmlAsync(html).ConfigureAwait(false);
@@ -122,7 +125,9 @@ namespace HTMLRenderer
         void IAstVisitor<ParsingContext>.Visit(HrefNode node, ParsingContext context)
         {
             Hyperlink h = new Hyperlink();
-            h.Inlines.Add(new Run() { Text = node.Content.Text });
+            Run run = new Run() { Text = node.Content.Text };
+            if (context.Colors.Count > 0) run.Foreground = context.Colors.Peek();
+            h.Inlines.Add(run);
             var link = node.Content.GetAttribute("href");
             link = Regex.Unescape(link);
             link = link.Substring(1, link.Length - 2);
@@ -132,7 +137,30 @@ namespace HTMLRenderer
 
         void IAstVisitor<ParsingContext>.Visit(TextNode node, ParsingContext context)
         {
-            context.Stack.Peek().Inlines.Add(new Run() { Text = node.Text.Text });
+            Run run = new Run() { Text = node.Text.Text };
+            if (context.Colors.Count > 0) run.Foreground = context.Colors.Peek();
+            context.Stack.Peek().Inlines.Add(run);
+        }
+
+        void IAstVisitor<ParsingContext>.Visit(FontNode node, ParsingContext context)
+        {
+            bool flag = false;
+            if(node.HexColor.Length>0)
+            {
+                flag = true;
+                var c = (System.Drawing.Color)colorConverter.ConvertFromString(node.HexColor);
+                var color = Color.FromArgb(c.A, c.R, c.G, c.B);
+                context.Colors.Push(new SolidColorBrush(color));
+
+            }
+            foreach (var item in node.Children)
+            {
+                item.Accept(this, context);
+            }
+            if(flag)
+            {
+                context.Colors.Pop();
+            }
         }
     }
     public class RichTextBlockExtension : DependencyObject

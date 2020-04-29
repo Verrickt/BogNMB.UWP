@@ -44,7 +44,14 @@ namespace HTMLParser
             }
             else
             {
-                node = new OtherNode(element);
+                if(element.NodeName== "FONT")
+                {
+                    node = new FontNode(element as IElement);
+                }
+                else
+                {
+                    node = new OtherNode(element);
+                }
             }
             return node;
         }
