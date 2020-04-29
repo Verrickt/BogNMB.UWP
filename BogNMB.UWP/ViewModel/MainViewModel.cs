@@ -98,9 +98,9 @@ namespace BogNMB.UWP.ViewModel
             if (_storageHelper.KeyExists(current_api_key))
             {
                 var config = _storageHelper.Read<ApiConfig>(current_api_key);
-                CurrentApiMode = ApiModes.First(i => i.ApiConfig == config);
+                CurrentApiMode = ApiModes.FirstOrDefault(i => i.ApiConfig == config);
             }
-            else
+            if(CurrentApiMode==null)
             {
                 CurrentApiMode = ApiModes.First();
                 _storageHelper.Save(current_api_key, CurrentApiMode.ApiConfig);
