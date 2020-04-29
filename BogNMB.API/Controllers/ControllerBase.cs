@@ -29,7 +29,7 @@ namespace BogNMB.API.Controllers
                 client.BaseAddress = new Uri(config.BaseUrl);
                 client.DefaultRequestHeaders.UserAgent.ParseAdd(config.DefaultUA);
                 client.Timeout = TimeSpan.FromSeconds(10);
-                _map[config] = _client;
+                _map[config] = client;
             }
             _client = _map[config];
             
