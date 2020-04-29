@@ -82,5 +82,12 @@ namespace BogNMB.UWP.Model
         {
             return;
         }
+
+        void IAstVisitor<ResolveContext>.Visit(FontNode node, ResolveContext context)
+        {
+            context.Parent = node;
+            foreach (var item in node.Children)
+                item.Accept(this, context);
+        }
     }
 }

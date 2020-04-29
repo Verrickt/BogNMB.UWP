@@ -13,6 +13,9 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
+using System.Drawing;
+using Color = Windows.UI.Color;
+using Rectangle = Windows.UI.Xaml.Shapes.Rectangle;
 
 namespace BogNMB.UWP.CustomControl
 {
@@ -34,16 +37,21 @@ namespace BogNMB.UWP.CustomControl
         public Stack<Paragraph> Stack { get; private set; }
         public List<Paragraph> Blocks { get; private set; }
         public int Level { get; private set; }
+        public Stack<SolidColorBrush> Colors { get; private set; }
+
         public ParsingContext(int level)
         {
             Level = level;
             Stack = new Stack<Paragraph>();
             Blocks = new List<Paragraph>();
+            Colors = new Stack<SolidColorBrush>();
         }
     }
 
     public class RichTextBlockRenderer : IAstVisitor<ParsingContext>
     {
+        private static readonly ColorConverter colorConverter = new ColorConverter();
+
         public IReadOnlyList<Block> Render(IAstNode node)
         {
             var context = new ParsingContext(1);
@@ -142,7 +150,9 @@ namespace BogNMB.UWP.CustomControl
         void IAstVisitor<ParsingContext>.Visit(HrefNode node, ParsingContext context)
         {
             Hyperlink h = new Hyperlink();
-            h.Inlines.Add(new Run() { Text = node.Content.Text });
+            Run run = new Run() { Text = node.Content.Text };
+            if (context.Colors.Count > 0) run.Foreground = context.Colors.Peek();
+            h.Inlines.Add(run);
             var link = node.Content.GetAttribute("href");
             link = Regex.Unescape(link);
             link = link.Substring(1, link.Length - 2);
@@ -154,20 +164,26 @@ namespace BogNMB.UWP.CustomControl
         {
             if (node.Refer!=null)
             {
-                var hyper = new Hyperlink();
-                hyper.Inlines.Add(new Run() { Text = node.Text.Text });
-                context.Stack.Peek().Inlines.Add(hyper);
+                {
+                    var hyper = new Hyperlink();
+                    Run run = new Run() { Text = node.Text.Text };
+                    if (context.Colors.Count > 0) run.Foreground = context.Colors.Peek();
+                    hyper.Inlines.Add(run);
+                    context.Stack.Peek().Inlines.Add(hyper);
+                }
+                
                 //if (context.Level > 1) return;
                 var root = node.Refer;
                 var newContext = new ParsingContext(context.Level + 1);
+                if (context.Colors.Count > 0)
+                {
+                    newContext.Colors.Push(context.Colors.Peek());
+                }
+
                 root.Accept(this, newContext);
                 newContext.Blocks.Trim();
                 var rtb = new RichTextBlock();
-
-
-               // var bb = new Paragraph();
-               // bb.Inlines.Add(new Run() { Text = $"Level {newContext.Level}" });
-               // rtb.Blocks.Add(bb);
+               
                 foreach (var item in newContext.Blocks) rtb.Blocks.Add(item);
                 
                 var panel = new InlineUIContainer();
@@ -192,7 +208,30 @@ namespace BogNMB.UWP.CustomControl
             }
             else
             {
-                context.Stack.Peek().Inlines.Add(new Run() { Text = node.Text.Text });
+                Run run = new Run() { Text = node.Text.Text };
+                if (context.Colors.Count > 0) run.Foreground = context.Colors.Peek();
+                context.Stack.Peek().Inlines.Add(run);
+            }
+        }
+
+        void IAstVisitor<ParsingContext>.Visit(FontNode node, ParsingContext context)
+        {
+            bool flag = false;
+            if (node.HexColor.Length > 0)
+            {
+                flag = true;
+                var c = (System.Drawing.Color)colorConverter.ConvertFromString(node.HexColor);
+                var color = Color.FromArgb(c.A, c.R, c.G, c.B);
+                context.Colors.Push(new SolidColorBrush(color));
+
+            }
+            foreach (var item in node.Children)
+            {
+                item.Accept(this, context);
+            }
+            if (flag)
+            {
+                context.Colors.Pop();
             }
         }
     }
