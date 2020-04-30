@@ -64,7 +64,7 @@ namespace BogNMB.API.Controllers
                 return str;
                 
             }
-            catch (Exception ex)
+            catch (Exception ex) when (!(ex is BogException))
             {
                 throw new BogException(response.ReasonPhrase, ex);
             }
