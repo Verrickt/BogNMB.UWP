@@ -231,6 +231,8 @@ namespace BogNMB.UWP.IncrementalLoading
         public void RetryFailed()
         {
             HasMoreItems = true;
+            // Automatic reload isn't fired after HasMoreItems changed, so force a reload.
+            LoadMoreItemsAsync(0).AsTask();
         }
 
         private async Task<LoadMoreItemsResult> LoadMoreItemsAsync(uint count, CancellationToken cancellationToken)
