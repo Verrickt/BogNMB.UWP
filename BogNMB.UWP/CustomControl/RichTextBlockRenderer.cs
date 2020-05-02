@@ -193,15 +193,15 @@ namespace BogNMB.UWP.CustomControl
                     {
                         HorizontalAlignment = HorizontalAlignment.Stretch,
                         VerticalAlignment = VerticalAlignment.Stretch,
-                        Background = new SolidColorBrush(Colors.Pink)
-                    };
+                        Background = new SolidColorBrush((Color)App.Current.Resources["SystemAccentColorLight2"])
+                };
                     var rect = new Rectangle();
                     grid.Children.Add(rect);
                     grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
                     grid.ColumnDefinitions.Add(new ColumnDefinition());
                     rect.Width = 8;
                     rect.VerticalAlignment = VerticalAlignment.Stretch;
-                    rect.Fill = new SolidColorBrush(Colors.Red);
+                    rect.Fill = new SolidColorBrush((Color)App.Current.Resources["SystemAccentColor"]);
                     grid.Children.Add(rtb);
                     Grid.SetColumn(rect, 0);
                     Grid.SetColumn(rtb, 1);
