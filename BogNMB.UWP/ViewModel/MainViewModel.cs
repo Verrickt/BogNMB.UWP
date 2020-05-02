@@ -115,7 +115,7 @@ namespace BogNMB.UWP.ViewModel
             {
                 pocos = await _storageHelper.ReadFileAsync<List<Forum>>(forum_cache_key);
             }
-            if (pocos.Count == 0)
+            if ((pocos?.Count??0) == 0)
             {
                 pocos = await new ForumController(config).GetForumsAsync();
                 await _storageHelper.SaveFileAsync(forum_cache_key, pocos);
