@@ -128,7 +128,7 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
             <ListView.Footer>
-                <RelativePanel Height="40" Margin="5,0" HorizontalAlignment="Center" >
+                <RelativePanel HorizontalAlignment="Stretch" Background="White" Height="40" Margin="5,0"  >
                     <ProgressRing Margin="10,0" 
                                   RelativePanel.AlignVerticalCenterWithPanel="True"
                                   RelativePanel.LeftOf="bible"

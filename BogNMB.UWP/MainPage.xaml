@@ -27,7 +27,7 @@
         <Frame Grid.Column="2">
             <view:PostUserControl DataContext="{Binding SelectedForum}" Grid.Column="1"></view:PostUserControl>
         </Frame>
-        <controls:GridSplitter  Grid.Column="3"></controls:GridSplitter>
+        <controls:GridSplitter Visibility="Collapsed"  Grid.Column="3"></controls:GridSplitter>
         <view:ThreadUserControl Grid.Column="4" DataContext="{Binding SelectedForum.SelectedPost}"></view:ThreadUserControl>
     </Grid>
 </Page>

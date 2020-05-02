@@ -13,7 +13,9 @@
     Loaded="UserControl_Loaded"
     d:DesignWidth="400">
 
-    <Grid>
+    <Grid 
+        Background="{ThemeResource SystemControlBaseLowAcrylicElementBrush}"
+        >
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition></RowDefinition>
@@ -52,7 +54,8 @@
                 </ComboBox>
             </ListView.Header>
             <ListView.Footer>
-                <Border  Height="1" Background="Gray">
+                <Border  Height="1" Background="{ThemeResource SystemBaseLowColor}"
+                         >
                 </Border>
             </ListView.Footer>
             <ListView.Items>
@@ -72,7 +75,9 @@
             </ListView.Items>
         </ListView>
         <Grid Grid.Row="1">
-            <ListView SelectionMode="Single" SelectedItem="{Binding SelectedForum,Mode=TwoWay}" ItemsSource="{Binding Forums}" Grid.Row="1">
+            <ListView SelectionMode="Single"
+                      
+                      SelectedItem="{Binding SelectedForum,Mode=TwoWay}" ItemsSource="{Binding Forums}" Grid.Row="1">
                 <ListView.Header>
                     <TextBlock HorizontalAlignment="Left"
                    Margin="12,12,12,12"
