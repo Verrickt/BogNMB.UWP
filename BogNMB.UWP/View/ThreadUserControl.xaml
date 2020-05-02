@@ -18,15 +18,29 @@
             <RowDefinition Height="48"></RowDefinition>
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-            <TextBlock VerticalAlignment="Center" Margin="12" Grid.Column="0" >
-                <Run Text="No."></Run><Run Text="{Binding No}"></Run>
-            </TextBlock>
-        </Grid>
+        <Border BorderThickness="0"
+                BorderBrush="{ThemeResource SystemBaseLowColor}"
+                >
+            <Grid Background="{ThemeResource SystemControlBaseLowAcrylicElementBrush}" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <TextBlock VerticalAlignment="Center" Margin="12" Grid.Column="0" >
+                <Run Text="No."></Run><Run Text="{Binding No,FallbackValue='(＾o＾)ﾉ'}"></Run>
+                </TextBlock>
+                <CommandBar Grid.Column="1"
+                     Margin="4,0"
+                        Background="Transparent"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    DefaultLabelPosition="Right" IsSticky="True" >
+                    <AppBarButton Icon="Add" IsEnabled="False" Label="回复"/>
+                    <AppBarButton Icon="Refresh" Command="{Binding RefreshCommand}"  Label="刷新"/>
+                </CommandBar>
+
+            </Grid>
+        </Border>
         <ListView 
             Grid.Row="1"
             SelectionMode="None"

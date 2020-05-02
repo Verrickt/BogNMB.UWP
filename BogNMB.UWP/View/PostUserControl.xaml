@@ -15,18 +15,48 @@
 
     <Grid  >
         <Grid.RowDefinitions>
-            <RowDefinition Height="48"></RowDefinition>
+            <RowDefinition Height="48" ></RowDefinition>
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
-        <TextBlock Margin="12" VerticalAlignment="Center" Text="{Binding Name}"></TextBlock>
+        <Border
+            BorderThickness="2,0,2,0"
+                BorderBrush="{ThemeResource SystemBaseLowColor}"
+            >
+            <Grid Background="{ThemeResource SystemControlBaseLowAcrylicElementBrush}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <TextBlock Margin="12" 
+                           FontSize="18"
+                           VerticalAlignment="Center" Text="{Binding Name}"></TextBlock>
+                <CommandBar Grid.Column="1"
+                     Margin="4,0"
+                        Background="Transparent"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    DefaultLabelPosition="Right" IsSticky="True" >
+                    <AppBarButton Icon="Add" IsEnabled="False" Label="发串"/>
+                    <AppBarButton Icon="Refresh" Command="{Binding RefreshCommand}"  Label="刷新"/>
+                    <CommandBar.SecondaryCommands>
+                        <AppBarButton Icon="Help" Label="版规"/>
+                    </CommandBar.SecondaryCommands>
+                </CommandBar>
+            </Grid>
+        </Border>
         <ListView Grid.Row="1"
-                  Background="Gray"
+                  Background="LightGray"
                   ItemsSource="{Binding Posts}"
                   SelectionMode="Single"
                   VerticalAlignment="Top"
                   SelectedItem="{Binding SelectedPost,Mode=TwoWay}"
                   HorizontalContentAlignment="Stretch"
                   >
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <ItemsStackPanel></ItemsStackPanel>
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
