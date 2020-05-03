@@ -14,6 +14,7 @@ namespace BogNMB.UWP.Converter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
+
             if (value is ThreadViewModel tv)
             {
                 if (tv.IsAdmin) return Colors.Red;
@@ -21,7 +22,7 @@ namespace BogNMB.UWP.Converter
             {
                 if (pv.IsAdmin) return Colors.Red;
             }
-            return (Color)Application.Current.Resources["SystemBaseHighColor"];
+            return (Color)Application.Current.Resources["SystemBaseMediumColor"];
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)
