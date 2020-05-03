@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.UI;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
 
 namespace BogNMB.UWP.Converter
@@ -16,13 +17,11 @@ namespace BogNMB.UWP.Converter
             if (value is ThreadViewModel tv)
             {
                 if (tv.IsAdmin) return Colors.Red;
-                else return Colors.Black;
             } else if(value is PostViewModel pv)
             {
                 if (pv.IsAdmin) return Colors.Red;
-                else return Colors.Black;
             }
-            return Colors.Black;
+            return (Color)Application.Current.Resources["SystemBaseHighColor"];
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)

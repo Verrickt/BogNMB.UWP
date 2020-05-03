@@ -45,7 +45,7 @@
             </Grid>
         </Border>
         <ListView Grid.Row="1"
-                  Background="LightGray"
+                  Background="{ThemeResource SystemBaseLowColor}"
                   ItemsSource="{Binding Posts}"
                   SelectionMode="Single"
                   VerticalAlignment="Top"
@@ -60,7 +60,7 @@
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
-                    <Setter Property="Background" Value="White"></Setter>
+                    <Setter Property="Background" Value="{ThemeResource SystemAltHighColor}"></Setter>
                     <Setter Property="Margin" Value="4"></Setter>
                 </Style>
             </ListView.ItemContainerStyle>
@@ -128,7 +128,7 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
             <ListView.Footer>
-                <RelativePanel HorizontalAlignment="Stretch" Background="White" Height="40" Margin="5,0"  >
+                <RelativePanel HorizontalAlignment="Stretch" Background="{ThemeResource SystemAltHighColor}" Height="40" Margin="5,0"  >
                     <ProgressRing Margin="10,0" 
                                   RelativePanel.AlignVerticalCenterWithPanel="True"
                                   RelativePanel.LeftOf="bible"

@@ -50,7 +50,7 @@
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
-                    <Setter Property="Background" Value="White"></Setter>
+                    <Setter Property="Background" Value="{ThemeResource SystemAltHighColor}"></Setter>
                     <Setter Property="Margin" Value="5"></Setter>
                     <Setter Property="Template">
                         <Setter.Value>
@@ -90,7 +90,7 @@
                         <Grid>
                             <Grid.Resources>
                                 <Style TargetType="TextBlock" >
-                                    <Setter Property="Foreground" Value="Gray"></Setter>
+                                    <Setter Property="Foreground" Value="{ThemeResource SystemBaseMediumColor}"></Setter>
                                 </Style>
                             </Grid.Resources>
                             <Grid.ColumnDefinitions>
