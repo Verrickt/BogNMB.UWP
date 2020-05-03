@@ -138,6 +138,9 @@
     <Compile Include="View\ForumUserControl.xaml.cs">
       <DependentUpon>ForumUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\PostHeader.xaml.cs">
+      <DependentUpon>PostHeader.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\PostUserControl.xaml.cs">
       <DependentUpon>PostUserControl.xaml</DependentUpon>
     </Compile>
@@ -193,6 +196,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\ForumUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\PostHeader.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

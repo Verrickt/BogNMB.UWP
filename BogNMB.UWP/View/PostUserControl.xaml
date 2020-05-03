@@ -69,36 +69,10 @@
                     <Grid Margin="0,8" >
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"></RowDefinition>
-                            <RowDefinition Height="Auto"></RowDefinition>
                             <RowDefinition></RowDefinition>
                         </Grid.RowDefinitions>
-                        <Grid Grid.Row="0" >
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition></ColumnDefinition>
-                                <ColumnDefinition></ColumnDefinition>
-                                <ColumnDefinition></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Text="{Binding Cookie}" >
-                                <TextBlock.Foreground>
-                                    <SolidColorBrush
-                                        Color="{Binding Converter={StaticResource CookieColorConverter},ConverterParameter={Binding}}"
-                                        ></SolidColorBrush>
-                                </TextBlock.Foreground>
-                            </TextBlock>
-                            <TextBlock Grid.Column="1" Text="{Binding Time}"></TextBlock>
-                            <TextBlock HorizontalAlignment="Right" Grid.Column="2" Text="{Binding ReplyCount}"></TextBlock>
-                        </Grid>
-                        <Grid Grid.Row="1"
-                              Visibility="{Binding Saged,Converter={StaticResource BoolToVisibilityConverter}}"
-                              >
-                            <TextBlock Margin="0,-5,0,0"
-                                       Foreground="Red"
-                                       >
-                                <Run FontSize="14" FontFamily="Segoe MDL2 Assets" Text="&#xE8E0;"></Run>
-                                <Run FontSize="18" >本串已被红名推荐</Run>
-                            </TextBlock>
-                        </Grid>
-                        <RelativePanel Grid.Row="2" Margin="0,4">
+                        <local:PostHeader Grid.Row="0"></local:PostHeader>
+                        <RelativePanel Grid.Row="1" Margin="0,4">
                             <controls:ImageEx
                                 IsCacheEnabled="True"
                                 EnableLazyLoading="True"
