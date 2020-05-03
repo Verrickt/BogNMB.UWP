@@ -183,33 +183,39 @@ namespace BogNMB.UWP.CustomControl
                     {
                         newContext.Colors.Push(context.Colors.Peek());
                     }
-                    var panel = new InlineUIContainer();
                     root.Accept(this, newContext);
                     newContext.Blocks.Trim();
 
                     foreach (var item in newContext.Blocks) rtb.Blocks.Add(item);
-
-                    var grid = new Grid()
-                    {
-                        HorizontalAlignment = HorizontalAlignment.Stretch,
-                        VerticalAlignment = VerticalAlignment.Stretch,
-                    };
-                    var key = App.Current.RequestedTheme == ApplicationTheme.Dark ? "SystemAccentColorDark3" : "SystemAccentColorLight3";
-                    grid.Background = new SolidColorBrush((Color)App.Current.Resources[key]);
-
-                    var rect = new Rectangle();
-                    grid.Children.Add(rect);
-                    grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
-                    grid.ColumnDefinitions.Add(new ColumnDefinition());
-                    rect.Width = 8;
-                    rect.VerticalAlignment = VerticalAlignment.Stretch;
-                    rect.Fill = new SolidColorBrush((Color)App.Current.Resources["SystemAccentColor"]);
-                    grid.Children.Add(rtb);
-                    Grid.SetColumn(rect, 0);
-                    Grid.SetColumn(rtb, 1);
+                    
+                    var panel = new InlineUIContainer();
                     var stretch = new StretchContentControl();
-                    stretch.Content = grid;
-                    panel.Child = stretch;
+                    {
+                        panel.Child = stretch;
+                    }
+                    var grid = new Grid();
+                    {
+                        grid.Style = (Style)Application.Current.Resources["RTBNestedGridStyle"];
+                        grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
+                        grid.ColumnDefinitions.Add(new ColumnDefinition());
+                        stretch.Content = grid;
+
+                    }
+
+                    {
+                        var rect = new Rectangle();
+                        rect.Style = (Style)Application.Current.Resources["RTBRectStyle"];
+                        grid.Children.Add(rect);
+                        Grid.SetColumn(rect, 0);
+                    }
+
+                    {
+                        grid.Children.Add(rtb);
+                        Grid.SetColumn(rtb, 1);
+                    }
+                    
+                    
+                    
                     context.Stack.Peek().Inlines.Add(new LineBreak());
                     context.Stack.Peek().Inlines.Add(panel);
                 }

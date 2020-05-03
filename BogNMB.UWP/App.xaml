@@ -6,9 +6,11 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Styles/Theme.xaml"></ResourceDictionary>
                 <ResourceDictionary Source="/Converter/Converters.xaml"></ResourceDictionary>
                 <ResourceDictionary Source="/Styles/FrameStyle.xaml"></ResourceDictionary>
                 <ResourceDictionary Source="/Styles/CustomControlStyle.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="/Styles/RTBRenderStyle"></ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
