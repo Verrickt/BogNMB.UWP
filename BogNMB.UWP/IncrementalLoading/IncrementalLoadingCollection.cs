@@ -131,8 +131,8 @@ namespace BogNMB.UWP.IncrementalLoading
         /// An <see cref="Action"/> that is called if an error occours during data retrieval.
         /// </param>
         /// <seealso cref="IIncrementalSource{TSource}"/>
-        public IncrementalLoadingCollection(int itemsPerPage = 20, Action onStartLoading = null, Action onEndLoading = null, Action<Exception> onError = null)
-            : this(Activator.CreateInstance<TSource>(), itemsPerPage, onStartLoading, onEndLoading, onError)
+        public IncrementalLoadingCollection(Action onStartLoading = null, Action onEndLoading = null, Action<Exception> onError = null)
+            : this(Activator.CreateInstance<TSource>(), onStartLoading, onEndLoading, onError)
         {
         }
 
@@ -155,7 +155,7 @@ namespace BogNMB.UWP.IncrementalLoading
         /// An <see cref="Action"/> that is called if an error occours during data retrieval.
         /// </param>
         /// <seealso cref="IIncrementalSource{TSource}"/>
-        public IncrementalLoadingCollection(TSource source, int itemsPerPage = 20, Action onStartLoading = null, Action onEndLoading = null, Action<Exception> onError = null)
+        public IncrementalLoadingCollection(TSource source, Action onStartLoading = null, Action onEndLoading = null, Action<Exception> onError = null)
         {
             if (source == null)
             {
@@ -168,7 +168,7 @@ namespace BogNMB.UWP.IncrementalLoading
             OnEndLoading = onEndLoading;
             OnError = onError;
 
-            ItemsPerPage = itemsPerPage;
+            ItemsPerPage = source.PageSize;
             _hasMoreItems = true;
         }
 
@@ -291,6 +291,7 @@ namespace BogNMB.UWP.IncrementalLoading
 
     public interface IIncrementalSource<TSource>
     {
+        int PageSize { get; }
         /// <summary>
         /// This method is invoked everytime the view need to show more items. Retrieves items based on <paramref name="pageIndex"/> and <paramref name="pageSize"/> arguments.
         /// </summary>

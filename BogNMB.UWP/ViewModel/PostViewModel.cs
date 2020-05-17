@@ -50,7 +50,7 @@ namespace BogNMB.UWP.ViewModel
         protected override void OnApiModeChanged(ApiConfig config)
         {
             Threads = new IncrementalLoadingCollection<ThreadLoader, ThreadViewModel>(
-                new ThreadLoader(this._post,config), 5,
+                new ThreadLoader(this._post,config),
                 () => { _onError = false; FooterText = Bible.OnLoading; RefreshCommand.RaiseCanExecuteChanged(); }
                 , () => { if (!_onError) FooterText = Bible.OnFinished; RefreshCommand.RaiseCanExecuteChanged(); },
                 (ex) => { FooterText = Bible.OnError; _onError = true; RefreshCommand.RaiseCanExecuteChanged(); });
@@ -72,7 +72,7 @@ namespace BogNMB.UWP.ViewModel
             _thumbSrc = post.Img;
             _fullImgSrc = post.Src;
             Threads = new IncrementalLoadingCollection<ThreadLoader, ThreadViewModel>(
-                            new ThreadLoader(this._post, config), 5,
+                            new ThreadLoader(this._post, config),
                             () => { _onError = false; FooterText = Bible.OnLoading; RefreshCommand.RaiseCanExecuteChanged(); }
                             , () => { if (!_onError) FooterText = Bible.OnFinished; RefreshCommand.RaiseCanExecuteChanged(); },
                             (ex) => { FooterText = Bible.OnError; _onError = true; RefreshCommand.RaiseCanExecuteChanged(); });
@@ -115,11 +115,16 @@ namespace BogNMB.UWP.ViewModel
         private ReferenceResolver resolver;
         private Post _post;
         private ApiConfig _config;
+        public int PageSize { get; }
+        private readonly ThreadController _threadController;
+
         public ThreadLoader(Post post,ApiConfig config)
         {
             _post = post;
             resolver = new ReferenceResolver();
             _config =config;
+            _threadController = new ThreadController(_config);
+            PageSize = _threadController.PageSize;
         }
         public async Task<IEnumerable<ThreadViewModel>> GetPagedItemsAsync(int pageIndex, int pageSize, CancellationToken cancellationToken = default)
         {
@@ -128,8 +133,7 @@ namespace BogNMB.UWP.ViewModel
             {
                 return Enumerable.Empty<ThreadViewModel>();
             }
-            var pc = new ThreadController(_config);
-            var pocos = await pc.GetThreadsAsync(_post.No, pageIndex+1).ConfigureAwait(false);
+            var pocos = await _threadController.GetThreadsAsync(_post.No, pageIndex+1).ConfigureAwait(false);
             if (pageIndex == 0)
             {
                 var SelfAsJson = (Thread)JsonConvert.DeserializeObject(JsonConvert.SerializeObject(_post), typeof(Thread));

@@ -55,7 +55,7 @@ namespace BogNMB.UWP.ViewModel
         protected override void OnApiModeChanged(ApiConfig config)
         {
             Posts = new IncrementalLoadingCollection<PostLoader, PostViewModel>(
-                new PostLoader(this,config), 5,
+                new PostLoader(this,config),
                 () => { _onError = false; FooterText = Bible.OnLoading; RefreshCommand.RaiseCanExecuteChanged(); }
                 , () => { if (!_onError) FooterText = Bible.OnFinished; RefreshCommand.RaiseCanExecuteChanged(); },
                 (ex) => { FooterText = Bible.OnError; _onError = true; RefreshCommand.RaiseCanExecuteChanged(); });
@@ -65,7 +65,7 @@ namespace BogNMB.UWP.ViewModel
             Name = forum.Name;
             ID = forum.Id;
             Posts = new IncrementalLoadingCollection<PostLoader, PostViewModel>(
-                new PostLoader(this, config), 5,
+                new PostLoader(this, config),
                 () => { _onError = false; FooterText = Bible.OnLoading; RefreshCommand.RaiseCanExecuteChanged(); }
                 , () => { if (!_onError) FooterText = Bible.OnFinished; RefreshCommand.RaiseCanExecuteChanged(); },
                 (ex) => { FooterText = Bible.OnError; _onError = true; RefreshCommand.RaiseCanExecuteChanged(); });
@@ -99,17 +99,21 @@ namespace BogNMB.UWP.ViewModel
     {
         private readonly ForumViewModel _forum;
         private readonly ApiConfig _config;
-
+        private readonly PostController _postController;
+        public int PageSize { get; }
         public PostLoader(ForumViewModel forum,ApiConfig config)
         {
             _forum = forum;
             this._config = config;
+            _postController = new PostController(_config);
+            PageSize = _postController.PageSize;
         }
+
 
         public async Task<IEnumerable<PostViewModel>> GetPagedItemsAsync(int pageIndex, int pageSize, CancellationToken cancellationToken = default)
         {
-            var pc = new PostController(_config);
-            var posts = await pc.GetPostAsync(_forum.ID, pageIndex + 1);
+            
+            var posts = await _postController.GetPostAsync(_forum.ID, pageIndex + 1);
             return posts.Select(i => new PostViewModel(i,_config));
         }
     }
