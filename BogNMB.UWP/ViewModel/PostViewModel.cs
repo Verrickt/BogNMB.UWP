@@ -96,20 +96,6 @@ namespace BogNMB.UWP.ViewModel
         
     }
 
-    public class TimedOutIncrementalLoadingCollection<TSource, IType> : IncrementalLoadingCollection<TSource, IType>
-        where TSource : IIncrementalSource<IType>
-    {
-        public TimedOutIncrementalLoadingCollection(TSource source, int itemsPerPage = 20,
-            Action onStartLoading = null, Action onEndLoading = null,
-            Action<Exception> onError = null)
-            : base(source, itemsPerPage,
-                   onStartLoading, onEndLoading,
-                   onError)
-        {
-
-        }
-    }
-
     public class ThreadLoader : IIncrementalSource<ThreadViewModel>
     {
         private ReferenceResolver resolver;
