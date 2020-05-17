@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace BogNMB.API.Controllers
 {
-    public class ThreadController : ControllerBase
+    public class ThreadController : PagedController
     {
         public ThreadController(ApiConfig config) : base(config)
         {
