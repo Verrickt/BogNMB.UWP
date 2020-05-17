@@ -50,7 +50,7 @@ namespace BogNMB.UWP.ViewModel
         protected override void OnApiModeChanged(ApiConfig config)
         {
             Threads = new IncrementalLoadingCollection<ThreadLoader, ThreadViewModel>(
-                new ThreadLoader(this._post,config), 20,
+                new ThreadLoader(this._post,config), 5,
                 () => { _onError = false; FooterText = Bible.OnLoading; RefreshCommand.RaiseCanExecuteChanged(); }
                 , () => { if (!_onError) FooterText = Bible.OnFinished; RefreshCommand.RaiseCanExecuteChanged(); },
                 (ex) => { FooterText = Bible.OnError; _onError = true; RefreshCommand.RaiseCanExecuteChanged(); });
@@ -72,7 +72,7 @@ namespace BogNMB.UWP.ViewModel
             _thumbSrc = post.Img;
             _fullImgSrc = post.Src;
             Threads = new IncrementalLoadingCollection<ThreadLoader, ThreadViewModel>(
-                            new ThreadLoader(this._post, config), 20,
+                            new ThreadLoader(this._post, config), 5,
                             () => { _onError = false; FooterText = Bible.OnLoading; RefreshCommand.RaiseCanExecuteChanged(); }
                             , () => { if (!_onError) FooterText = Bible.OnFinished; RefreshCommand.RaiseCanExecuteChanged(); },
                             (ex) => { FooterText = Bible.OnError; _onError = true; RefreshCommand.RaiseCanExecuteChanged(); });

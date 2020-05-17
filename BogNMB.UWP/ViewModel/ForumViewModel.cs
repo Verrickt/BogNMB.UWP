@@ -55,7 +55,7 @@ namespace BogNMB.UWP.ViewModel
         protected override void OnApiModeChanged(ApiConfig config)
         {
             Posts = new IncrementalLoadingCollection<PostLoader, PostViewModel>(
-                new PostLoader(this,config), 20,
+                new PostLoader(this,config), 5,
                 () => { _onError = false; FooterText = Bible.OnLoading; RefreshCommand.RaiseCanExecuteChanged(); }
                 , () => { if (!_onError) FooterText = Bible.OnFinished; RefreshCommand.RaiseCanExecuteChanged(); },
                 (ex) => { FooterText = Bible.OnError; _onError = true; RefreshCommand.RaiseCanExecuteChanged(); });
@@ -65,7 +65,7 @@ namespace BogNMB.UWP.ViewModel
             Name = forum.Name;
             ID = forum.Id;
             Posts = new IncrementalLoadingCollection<PostLoader, PostViewModel>(
-                new PostLoader(this, config), 20,
+                new PostLoader(this, config), 5,
                 () => { _onError = false; FooterText = Bible.OnLoading; RefreshCommand.RaiseCanExecuteChanged(); }
                 , () => { if (!_onError) FooterText = Bible.OnFinished; RefreshCommand.RaiseCanExecuteChanged(); },
                 (ex) => { FooterText = Bible.OnError; _onError = true; RefreshCommand.RaiseCanExecuteChanged(); });
