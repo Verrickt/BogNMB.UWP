@@ -1,5 +1,12 @@
 # BogNMB.UWP
-[B岛匿名版](http://bog.ac)的非官方UWP客户端。为了开发方便SDK版本为1903，日后可能会修改
+
+
+
+~~[B岛匿名版](http://bog.ac)的非官方UWP客户端。为了开发方便SDK版本为1903，日后可能会修改~~  
+已停止开发
+
+
+
 
 ![Screenshot](./Promotions/Screenshot.PNG)
 
@@ -27,5 +34,4 @@ GPL 3.0
 1. fork这个仓库,clone到本地后双击`BogNMB.sln`打开即可。
 若构建出现问题请确认Solution Platforms是否与本机处理器架构一致
 
-有兴趣共同开发的请发我邮件或[telegram](
-https://t.me/adios_verrickt)
+
